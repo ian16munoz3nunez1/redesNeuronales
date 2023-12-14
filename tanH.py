@@ -15,7 +15,7 @@ plt.plot(v, phi, 'g-', linewidth=2)
 
 plt.title("Funcion tangente hiperbolica", fontsize=20)
 plt.xlabel('v', fontsize=15)
-plt.ylabel('$\phi(v)$', fontsize=15)
+plt.ylabel('$\\varphi(v)$', fontsize=15)
 
 plt.show()
 
