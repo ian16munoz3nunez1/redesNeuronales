@@ -1,22 +1,28 @@
 #!/bin/python3
 
 # Ian Mu;oz Nu;ez - Perceptron
-# Ejemplo: Si se quiere entrenar un perceptron con
-# una funcion AND de dos entradas, se tendria:
+# - Construya la tabla de verdad para la siguiente función
+#   lógica: A(B+C)
+# - Escriba un código para implementar la función
 #       +-------------------+
-#       | x_1 | x_2 | b | d |
-#       +-----+-----+---+---+
-#       |  0  |  0  | 1 | 0 | <-- Primer patron
-#       +-----+-----+---+---+
-#       |  0  |  1  | 1 | 0 | <-- Segundo patron
-#       +-----+-----+---+---+
-#       |  1  |  0  | 1 | 0 | <-- Tercer patron
-#       +-----+-----+---+---+
-#       |  1  |  1  | 1 | 1 | <-- Cuarto patron
-#       +-----+-----+---+---+
-# En donde 'x_1' es la entrada 1, 'x_2', la entrada 2, 'b'
-# es la entrada del bias, que siempre está en 1 y 'd' son
-# los valores deseados.
+#       | A | B | C | F | b |
+#       |---+---+---+---+---|
+#       | 0 | 0 | 0 | 0 | 1 | <-- Patron 1
+#       |---+---+---+---+---|
+#       | 0 | 0 | 1 | 0 | 1 | <-- Patron 2
+#       |---+---+---+---+---|
+#       | 0 | 1 | 0 | 0 | 1 | <-- Patron 3
+#       |---+---+---+---+---|
+#       | 0 | 1 | 1 | 0 | 1 | <-- Patron 4
+#       |---+---+---+---+---|
+#       | 1 | 0 | 0 | 0 | 1 | <-- Patron 5
+#       |---+---+---+---+---|
+#       | 1 | 0 | 1 | 1 | 1 | <-- Patron 6
+#       |---+---+---+---+---|
+#       | 1 | 1 | 0 | 1 | 1 | <-- Patron 7
+#       |---+---+---+---+---|
+#       | 1 | 1 | 1 | 1 | 1 | <-- Patron 8
+#       +-------------------+
 
 import numpy as np
 

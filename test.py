@@ -1,22 +1,28 @@
 #!/bin/python3
 
 # Ian Mu;oz Nu;ez - Perceptron
-# Ejemplo: Si se quiere entrenar un perceptron con
-# una funcion AND de dos entradas, se tendria:
+# - Construya la tabla de verdad para la siguiente función
+#   lógica: A(B+C)
+# - Escriba un código para implementar la función
 #       +-------------------+
-#       | x_1 | x_2 | b | d |
-#       +-----+-----+---+---+
-#       |  0  |  0  | 1 | 0 | <-- Primer patron
-#       +-----+-----+---+---+
-#       |  0  |  1  | 1 | 0 | <-- Segundo patron
-#       +-----+-----+---+---+
-#       |  1  |  0  | 1 | 0 | <-- Tercer patron
-#       +-----+-----+---+---+
-#       |  1  |  1  | 1 | 1 | <-- Cuarto patron
-#       +-----+-----+---+---+
-# En donde 'x_1' es la entrada 1, 'x_2', la entrada 2, 'b'
-# es la entrada del bias, que siempre está en 1 y 'd' son
-# los valores deseados.
+#       | A | B | C | F | b |
+#       |---+---+---+---+---|
+#       | 0 | 0 | 0 | 0 | 1 | <-- Patron 1
+#       |---+---+---+---+---|
+#       | 0 | 0 | 1 | 0 | 1 | <-- Patron 2
+#       |---+---+---+---+---|
+#       | 0 | 1 | 0 | 0 | 1 | <-- Patron 3
+#       |---+---+---+---+---|
+#       | 0 | 1 | 1 | 0 | 1 | <-- Patron 4
+#       |---+---+---+---+---|
+#       | 1 | 0 | 0 | 0 | 1 | <-- Patron 5
+#       |---+---+---+---+---|
+#       | 1 | 0 | 1 | 1 | 1 | <-- Patron 6
+#       |---+---+---+---+---|
+#       | 1 | 1 | 0 | 1 | 1 | <-- Patron 7
+#       |---+---+---+---+---|
+#       | 1 | 1 | 1 | 1 | 1 | <-- Patron 8
+#       +-------------------+
 
 # Importacion de modulos
 import numpy as np
@@ -26,33 +32,37 @@ import pickle
 nn = pickle.load(open('perceptron.sav', 'rb')) # Se cargan los datos del archivo sav
 
 xl, xu = -0.1, 1.1 # Limites para los datos aleatorios de entrada
-x = xl + (xu-xl)*np.random.rand(2, 20) # Datos de entrada
+x = xl + (xu-xl)*np.random.rand(3, 20) # Datos de entrada
 
 yp = nn.predict(x) # Se obtiene la salida de la red con el entrenamiento previo
 
-w1, w2, b = nn.w[0], nn.w[1], nn.b # Pesos y bias del perceptron
-t = np.arange(xl, xu, 0.1) # Arreglo de valores para el hiperplano separador
+w1, w2, w3, b = nn.w[0], nn.w[1], nn.w[2], nn.b # Pesos y bias del perceptron
+xLim = np.linspace(xl, xu, 100) # Valores en X para generar la malla
+yLim = np.linspace(xl, xu, 100) # Valores en Y para generar la malla
+X, Y = np.meshgrid(xLim, yLim) # Malla con rangos de valores de xl a xu para el hiperplano separador
 
-m = -w1/w2 # Pendiente del hiperplano
-b = -b/w2 # Coeficiente del hiperplano
-f = m*t + b # Funcion del hiperplano separador
-# f = -(w1/w2)*t - (b/w2) # Funcion del hiperplano separador
+m = -((w1*X)/w3) - ((w2*Y)/w3) # Pendiente del hiperplano
+b = -b/w3 # Coeficiente del hiperplano
+f = m + b # Funcion del hiperplano separador
+# f = -((w1*X)/w3) - ((w2*Y)/w3) - (b/w3) # Funcion del hiperplano separador
 
 plt.figure(1)
-plt.grid()
-plt.axis('equal') # Muestra la escala de los ejes igual
-plt.axis([xl, xu, xl, xu]) # Limite de los ejes
+ax = plt.axes(projection='3d')
+ax.axis('equal') # Muestra la escala de los ejes igual
+ax.set_xlim([xl, xu]) # Limites del eje 'x'
+ax.set_ylim([xl, xu]) # Limites del eje 'y'
+ax.set_zlim([xl, xu]) # Limites del eje 'z'
 
-# Grafica de los datos de entrada y su clasificacion
-plt.plot(x[0,yp==1], x[1,yp==1], 'yo', markersize=12)
-plt.plot(x[0,yp==0], x[1,yp==0], 'go', markersize=12)
-plt.plot(t, f, 'r-', linewidth=2) # Grafica del hiperplano separador
+# Grafica de los datos de entrenamiento y su clasificacion
+ax.plot3D(x[0,yp==1], x[1,yp==1], x[2,yp==1], 'yo', markersize=8)
+ax.plot3D(x[0,yp==0], x[1,yp==0], x[2,yp==0], 'go', markersize=8)
+ax.plot_surface(X, Y, f, cmap='viridis') # Grafica del hiperplano separador
 
 # Informacion de la grafica
-plt.title("and", fontsize=20)
-plt.xlabel('A', fontsize=15)
-plt.ylabel('B', fontsize=15)
-plt.legend(['$c_0$', '$c_1$', 'Hiperplano separador'])
+ax.set_title("A(B+C)", fontsize=20)
+ax.set_xlabel('A', fontsize=15)
+ax.set_ylabel('B', fontsize=15)
+ax.set_zlabel('C', fontsize=15)
 
 plt.show()
 
