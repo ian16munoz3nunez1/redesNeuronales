@@ -1,38 +1,23 @@
 % Ian Mu;oz Nu;ez - Perceptron
-% - Construya la tabla de verdad para la siguiente función
-%   lógica: A(B+C)
-% - Escriba un código para implementar la función
-%       +-------------------+
-%       | A | B | C | F | b |
-%       |---+---+---+---+---|
-%       | 0 | 0 | 0 | 0 | 1 | <-- Patron 1
-%       |---+---+---+---+---|
-%       | 0 | 0 | 1 | 0 | 1 | <-- Patron 2
-%       |---+---+---+---+---|
-%       | 0 | 1 | 0 | 0 | 1 | <-- Patron 3
-%       |---+---+---+---+---|
-%       | 0 | 1 | 1 | 0 | 1 | <-- Patron 4
-%       |---+---+---+---+---|
-%       | 1 | 0 | 0 | 0 | 1 | <-- Patron 5
-%       |---+---+---+---+---|
-%       | 1 | 0 | 1 | 1 | 1 | <-- Patron 6
-%       |---+---+---+---+---|
-%       | 1 | 1 | 0 | 1 | 1 | <-- Patron 7
-%       |---+---+---+---+---|
-%       | 1 | 1 | 1 | 1 | 1 | <-- Patron 8
-%       +-------------------+
+% Diseñar una red neuronal unicapa, con función tipo escalón, con dos
+% entradas y dos salidas que sea capaz de clasificiar los siguientes
+% diez puntos en el plano, los cuales pertenecen a cuatro grupos:
+% Grupo 1: (0.1, 1.2), (0.7, 1.8), (0.8, 1.6)
+% Grupo 2: (0.8, 0.6), (1.0, 0.8)
+% Grupo 3: (0.3, 0.5), (0.0, 0.2), (-0.3, 0.8)
+% Grupo 4: (-0.5, -1.5), (-1.5, -1.3)
 
 close all
 clear
 clc
 
-x = [0 0 0 0 1 1 1 1;
-    0 0 1 1 0 0 1 1;
-    0 1 0 1 0 1 0 1]; % Datos de entrada
-b = [1 1 1 1 1 1 1 1]; % Entrada fija para el bias
+x = [0.1 0.7 0.8 0.8 1.0 0.3 0.0 -0.3 -0.5 -1.5;
+    1.2 1.8 1.6 0.6 0.8 0.5 0.2 0.8 -1.5 -1.3]; % Datos de entrada
+b = [1 1 1 1 1 1 1 1 1 1]; % Entrada fija para el bias
 x = [x; b]; % Datos de entrenamiento con entrada fija
-d = [0 0 0 0 0 1 1 1]; % Salida deseada
-w = rand(4,1); % Pesos sinapticos aleatorios iniciales
+d = [0 0 0 0 0 1 1 1 1 1;
+    0 0 0 1 1 0 0 0 1 1]; % Salida deseada
+w = rand(3,2); % Pesos sinapticos aleatorios iniciales
 epocas = 100; % Numero de iteraciones deseadas
 
 % Funcion escalon
@@ -49,13 +34,15 @@ p = size(x,2); % Numero de patrones de entrada
 for epoca= 1:epocas
     ep = 0;
     for i= 1:p
-        v = w' * x(:,i); % Multiplicacion del vector de entrada por el vector de pesos sinapticos
-        y(i) = escalon(v); % Funcion de activacion
+        for j= 1:size(d, 1)
+            v = w(:,j)' * x(:,i); % Multiplicacion del vector de entrada por el vector de pesos sinapticos
+            y(j,i) = escalon(v); % Funcion de activacion
 
-        e(i) = d(i) - y(i); % Error obtenido
-        if e(i) < 0 || e(i) > 0
-            w = w + e(i)*x(:,i); % Ajuste de pesos
-            ep = ep + 1;
+            e = d(j,i) - y(j,i); % Error obtenido
+            if e < 0 || e > 0
+                w(:,j) = w(:,j) + e*x(:,i); % Ajuste de pesos
+                ep = ep + 1;
+            end
         end
     end
 
@@ -65,31 +52,30 @@ for epoca= 1:epocas
     end
 end
 
-xl = -0.1; % Limite inferior para mostrar la grafica
-xu = 1.1; % Limite superior para mostrar la grafica
-xLim = linspace(xl, xu, 100); % Valores en X para generar la malla
-yLim = linspace(xl, xu, 100); % Valores en Y para generar la malla
-[X, Y] = meshgrid(xLim, yLim); % Malla con rangos de valores de xl a xu para el hiperplano separador
+xl = min(min(x))-0.1; % Limite inferior para mostrar la grafica
+xu = max(max(x))+0.1; % Limite superior para mostrar la grafica
+t = xl:0.1:xu; % Arreglo de valores para el hiperplano separador
 
-m = -((w(1)*X)/w(3)) - ((w(2)*Y)/w(3)); % Pendiente del hiperplano
-b = -w(4)/w(3); % Coeficiente del hiperplano
-f = m + b; % Funcion del hiperplano separador
-% f = -((w(1)*X)/w(3)) - ((w(2)*Y)/w(3)) - (w(4)/w(3)); % Funcion del hiperplano separador
+f1 = -(w(1,1)/w(2,1))*t - (w(3,1)/w(2,1)); % Funcion del hiperplano 1
+f2 = -(w(1,2)/w(2,2))*t - (w(3,2)/w(2,2)); % Funcion del hiperplano 2
 
 figure(1)
 hold on
 grid on
 axis equal % Muestra la escala de los ejes igual
-axis([xl xu xl xu xl xu]) % Limite de los ejes
+axis([xl xu xl xu]) % Limite de los ejes
+
+% Grafica de los datos de entrada y su clasificacion
+plot(x(1, (y(1,:)==1)&(y(2,:)==1)), x(2, (y(1,:)==1)&(y(2,:)==1)), 'r*', 'LineWidth', 2, 'MarkerSize', 8)
+plot(x(1, (y(1,:)==0)&(y(2,:)==1)), x(2, (y(1,:)==0)&(y(2,:)==1)), 'b*', 'LineWidth', 2, 'MarkerSize', 8)
+plot(x(1, (y(1,:)==1)&(y(2,:)==0)), x(2, (y(1,:)==1)&(y(2,:)==0)), 'g*', 'LineWidth', 2, 'MarkerSize', 8)
+plot(x(1, (y(1,:)==0)&(y(2,:)==0)), x(2, (y(1,:)==0)&(y(2,:)==0)), 'y*', 'LineWidth', 2, 'MarkerSize', 8)
+plot(t, f1, 'm-', 'LineWidth', 2) % Grafica del hiperplano separador 1
+plot(t, f2, 'c-', 'LineWidth', 2) % Grafica del hiperplano separador 2
 
 % Informacion de la grafica
 title("A(B+C)", 'FontSize', 20)
 xlabel('A', 'FontSize', 15)
 ylabel('B', 'FontSize', 15)
-zlabel('C', 'FontSize', 15)
-
-% Grafica de los datos de entrada y su clasificacion
-plot3(x(1,y==1), x(2,y==1), x(3,y==1), 'y*', 'LineWidth', 6, 'MarkerSize', 12)
-plot3(x(1,y==0), x(2,y==0), x(3,y==0), 'g*', 'LineWidth', 6, 'MarkerSize', 12)
-surf(X, Y, f) % Grafica del hiperplano separador
+legend('c_0', 'c_1', 'c_2', 'c_3', 'Hiperplano 1', 'Hiperplano 2')
 

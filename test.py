@@ -1,28 +1,13 @@
 #!/bin/python3
 
 # Ian Mu;oz Nu;ez - Perceptron
-# - Construya la tabla de verdad para la siguiente función
-#   lógica: A(B+C)
-# - Escriba un código para implementar la función
-#       +-------------------+
-#       | A | B | C | F | b |
-#       |---+---+---+---+---|
-#       | 0 | 0 | 0 | 0 | 1 | <-- Patron 1
-#       |---+---+---+---+---|
-#       | 0 | 0 | 1 | 0 | 1 | <-- Patron 2
-#       |---+---+---+---+---|
-#       | 0 | 1 | 0 | 0 | 1 | <-- Patron 3
-#       |---+---+---+---+---|
-#       | 0 | 1 | 1 | 0 | 1 | <-- Patron 4
-#       |---+---+---+---+---|
-#       | 1 | 0 | 0 | 0 | 1 | <-- Patron 5
-#       |---+---+---+---+---|
-#       | 1 | 0 | 1 | 1 | 1 | <-- Patron 6
-#       |---+---+---+---+---|
-#       | 1 | 1 | 0 | 1 | 1 | <-- Patron 7
-#       |---+---+---+---+---|
-#       | 1 | 1 | 1 | 1 | 1 | <-- Patron 8
-#       +-------------------+
+# Diseñar una red neuronal unicapa, con función tipo escalón, con dos
+# entradas y dos salidas que sea capaz de clasificiar los siguientes
+# diez puntos en el plano, los cuales pertenecen a cuatro grupos:
+# Grupo 1: (0.1, 1.2), (0.7, 1.8), (0.8, 1.6)
+# Grupo 2: (0.8, 0.6), (1.0, 0.8)
+# Grupo 3: (0.3, 0.5), (0.0, 0.2), (-0.3, 0.8)
+# Grupo 4: (-0.5, -1.5), (-1.5, -1.3)
 
 # Importacion de modulos
 import numpy as np
@@ -31,38 +16,33 @@ import pickle
 
 nn = pickle.load(open('perceptron.sav', 'rb')) # Se cargan los datos del archivo sav
 
-xl, xu = -0.1, 1.1 # Limites para los datos aleatorios de entrada
-x = xl + (xu-xl)*np.random.rand(3, 20) # Datos de entrada
+xl, xu = -1.7, 1.7 # Limites para los datos aleatorios de entrada
+x = xl + (xu-xl)*np.random.rand(2, 20) # Datos de entrada
 
 yp = nn.predict(x) # Se obtiene la salida de la red con el entrenamiento previo
 
-w1, w2, w3, b = nn.w[0], nn.w[1], nn.w[2], nn.b # Pesos y bias del perceptron
-xLim = np.linspace(xl, xu, 100) # Valores en X para generar la malla
-yLim = np.linspace(xl, xu, 100) # Valores en Y para generar la malla
-X, Y = np.meshgrid(xLim, yLim) # Malla con rangos de valores de xl a xu para el hiperplano separador
-
-m = -((w1*X)/w3) - ((w2*Y)/w3) # Pendiente del hiperplano
-b = -b/w3 # Coeficiente del hiperplano
-f = m + b # Funcion del hiperplano separador
-# f = -((w1*X)/w3) - ((w2*Y)/w3) - (b/w3) # Funcion del hiperplano separador
+t = np.arange(xl, xu, 0.1) # Arreglo de valores para los hiperplanos
+f1 = -(nn.w[0,0]/nn.w[1,0])*t - (nn.b[0]/nn.w[1,0]) # Funcion del hiperplano 1
+f2 = -(nn.w[0,1]/nn.w[1,1])*t - (nn.b[1]/nn.w[1,1]) # Funcion del hiperplano 2
 
 plt.figure(1)
-ax = plt.axes(projection='3d')
-ax.axis('equal') # Muestra la escala de los ejes igual
-ax.set_xlim([xl, xu]) # Limites del eje 'x'
-ax.set_ylim([xl, xu]) # Limites del eje 'y'
-ax.set_zlim([xl, xu]) # Limites del eje 'z'
+plt.grid()
+plt.axis('equal') # Muestra la escala de los ejes igual
+plt.axis([xl, xu, xl, xu]) # Limite de los ejes 'x' y 'y'
 
 # Grafica de los datos de entrenamiento y su clasificacion
-ax.plot3D(x[0,yp==1], x[1,yp==1], x[2,yp==1], 'yo', markersize=8)
-ax.plot3D(x[0,yp==0], x[1,yp==0], x[2,yp==0], 'go', markersize=8)
-ax.plot_surface(X, Y, f, cmap='viridis') # Grafica del hiperplano separador
+plt.plot(x[0, (yp[0,:]==1)*(yp[1,:]==1)], x[1, (yp[0,:]==1)*(yp[1,:]==1)], 'ro', markersize=8)
+plt.plot(x[0, (yp[0,:]==0)*(yp[1,:]==1)], x[1, (yp[0,:]==0)*(yp[1,:]==1)], 'bo', markersize=8)
+plt.plot(x[0, (yp[0,:]==1)*(yp[1,:]==0)], x[1, (yp[0,:]==1)*(yp[1,:]==0)], 'go', markersize=8)
+plt.plot(x[0, (yp[0,:]==0)*(yp[1,:]==0)], x[1, (yp[0,:]==0)*(yp[1,:]==0)], 'yo', markersize=8)
+plt.plot(t, f1, 'm-', linewidth=2) # Grafica del hiperplano separador 1
+plt.plot(t, f2, 'c-', linewidth=2) # Grafica del hiperplano separador 2
 
 # Informacion de la grafica
-ax.set_title("A(B+C)", fontsize=20)
-ax.set_xlabel('A', fontsize=15)
-ax.set_ylabel('B', fontsize=15)
-ax.set_zlabel('C', fontsize=15)
+plt.title("Clasificacion de 4 grupos", fontsize=20)
+plt.xlabel('A', fontsize=15)
+plt.ylabel('B', fontsize=15)
+plt.legend(['$c_0$', '$c_1$', '$c_2$', '$c_3$', 'Hiperplano 1', 'Hiperplano 2'])
 
 plt.show()
 
