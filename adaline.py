@@ -39,13 +39,17 @@ class Adaline:
         J = np.zeros(epocas) # Arreglo para almacenar el error del Adaline
 
         for epoca in range(epocas):
-            for i in range(p):
-                yp[i] = np.dot(self.w, x[i]) + self.b # Interaccion de la entrada con los pesos y el bias
+            permutation = np.random.permutation(p)
+            x = x[permutation]
+            y = y[permutation]
 
-                e = y[i] - yp[i] # Error entre la salida deseada y la obtenida
-                if e != 0:
-                    self.w += eta*e*x[i] # Ajuste de los pesos sinapticos
-                    self.b += eta*e # Ajuste del valor del bias
+            for i in range(p):
+                k = permutation[i]
+                yp[k] = np.dot(self.w, x[k]) + self.b # Interaccion de la entrada con los pesos y el bias
+
+                e = y[k] - yp[k] # Error entre la salida deseada y la obtenida
+                self.w += eta*e*x[k] # Ajuste de los pesos sinapticos
+                self.b += eta*e # Ajuste del valor del bias
 
             J[epoca] = np.sum((y - (np.dot(self.w,x) + self.b))**2) # Error minimo cuadrado
 
