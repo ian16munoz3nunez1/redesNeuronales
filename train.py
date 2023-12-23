@@ -1,20 +1,26 @@
 #!/bin/python3
 
 # Ian Mu;oz Nu;ez - Adaline
-# Si se quiere entrenar un Adaline con una funcion AND de dos entradas, se tiene:
-#       +--------------------+
-#       | x_1 | x_2 | b |  d |
-#       +-----+-----+---+----+
-#       |  0  |  0  | 1 | -1 | <- Primer patron
-#       +-----+-----+---+----+
-#       |  0  |  1  | 1 | -1 | <- Segundo patron
-#       +-----+-----+---+----+
-#       |  1  |  0  | 1 | -1 | <- Tercer patron
-#       +-----+-----+---+----+
-#       |  1  |  1  | 1 |  1 | <- Cuarto patron
-#       +--------------------+
-# En donde 'x_1' es la entrada 1, 'x_2' la entrada 2, 'b' es la entrada del bias
-# que siempre esta a 1 y 'd' los valores deseados
+# Desarrollar un código en el que un Adaline sea capaz de aproximar la función
+# descrita por los puntos
+# - (1.0, 0.5)
+# - (1.5, 1.1)
+# - (3.0, 3.0)
+# - (-1.2, -1.0)
+# Los datos para el entrenamiento del Adaline resultan de la siguiente manera
+#       +-----------------+
+#       |   x  | b |   y  |
+#       +------+---+------+
+#       |  1.0 | 1 |  0.5 |
+#       +------+---+------+
+#       |  1.5 | 1 |  1.1 |
+#       +------+---+------+
+#       |  3.0 | 1 |  3.0 |
+#       +------+---+------+
+#       | -1.2 | 1 | -1.0 |
+#       +-----------------+
+# con las posiciones en 'x' como los datos de entrada y las posiciones en 'y'
+# como la salida deseada, y 'b' como la entrada fija del bias.
 
 # Importacion de modulos
 import numpy as np
@@ -22,23 +28,23 @@ import matplotlib.pyplot as plt
 import pickle
 from adaline import Adaline
 
-x = np.array([[0, 0, 1, 1],
-              [0, 1, 0, 1]]) # Datos de entrenamiento
-y = np.array([-1, -1, -1, 1]) # Salida deseada
+x = np.array([1.0, 1.5, 3.0, -1.2]) # Datos de entrada
+y = np.array([0.5, 1.1, 3.0, -1.0]) # Salida deseada
 epocas = 100 # Numero de iteraciones deseadas
-eta = 0.2 # Factor de aprendizaje
+eta = 0.05 # Factor de aprendizaje
 
 nn = Adaline() # Objeto de tipo Adaline
-yp = nn.fit(x, y, eta, epocas) # Entrenamiento del Adaline
-yp = np.array([nn.signo(v) for v in yp]) # Funcion signo aplicada a la salida del Adaline
+J = nn.fit(x, y, eta, epocas) # Entrenamiento del Adaline
+yp = nn.predict(x) # Prediccion de los datos de entrada
 
-w1, w2, b = nn.w[0], nn.w[1], nn.b # Pesos y bias obtenidos por la red
+w, b = nn.w, nn.b # Pesos y bias obtenidos por la red
 xl, xu = min(x.ravel())-0.1, max(x.ravel())+0.1 # Limites inferior y superior
 t = np.arange(xl, xu, 0.1) # Arreglo de valores para el hiperplano separador
 
-m = -w1/w2 # Pendiente del hiperplano
-b = -b/w2 # Coeficiente del hiperplano
-f = m*t + b # Funcion del hiperplano separador
+px = np.array([0, -b/w]) # Posiciones en 'x' para los puntos que definen al hiperplano
+py = np.array([b, 0]) # Posiciones en 'y' para los puntos que definen al hiperplano
+m = (py[1]-py[0])/(px[1]-px[0]) # Pendiente del hiperplano
+f = m*(t-px[0]) + py[0] # Funcion del hiperplano
 
 plt.figure(1)
 plt.grid()
@@ -46,17 +52,27 @@ plt.axis('equal') # Muestra la escala de los ejes igual
 plt.axis([xl, xu, xl, xu]) # Limite de los ejes 'x' y 'y'
 
 # Grafica de los datos de entrada y su clasificacion
-plt.plot(x[0, yp==1], x[1, yp==1], 'yo', markersize=12)
-plt.plot(x[0, yp==-1], x[1, yp==-1], 'go', markersize=12)
-plt.plot(t, f, 'r-', linewidth=2) # Grafica del hiperplano
+plt.plot(x, y, 'bo', markersize=4) # Datos de entrada y salida deseada
+plt.plot(px, py, 'go', markersize=4) # Puntos del hiperplano
+plt.plot(x, yp, 'yo', markersize=4) # Prediccion
+plt.plot(t, f, 'r-', linewidth=2) # Hiperplano
 
 # Informacion de la grafica
-plt.title("El Adaline como clasificador", fontsize=20)
-plt.xlabel('A', fontsize=15)
-plt.ylabel('B', fontsize=15)
-plt.legend(['$c_0$', '$c_1$', 'Hiperplano'])
+plt.title("El Adaline como aproximador", fontsize=20)
+plt.xlabel('x', fontsize=15)
+plt.ylabel('y', fontsize=15)
+plt.legend(['Datos de entrada y salida', '$Puntos del hiperplano$', 'Prediccion', 'Hiperplano'])
+
+plt.figure(2)
+plt.grid()
+
+plt.plot(J, 'g-', linewidth=2) # Grafica del error
+
+# Informacion de la grafica
+plt.title("Grafica del error", fontsize=20)
+plt.xlabel('Epocas', fontsize=15)
+plt.ylabel('Error', fontsize=15)
+plt.legend(['error'])
 
 plt.show()
-
-pickle.dump(nn, open('adaline.sav', 'wb')) # Se guarda la informacion del Adaline en un archivo sav
 
