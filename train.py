@@ -1,26 +1,25 @@
 #!/bin/python3
 
 # Ian Mu;oz Nu;ez - Adaline
-# Desarrollar un código en el que un Adaline sea capaz de aproximar la función
-# descrita por los puntos
-# - (1.0, 0.5)
-# - (1.5, 1.1)
-# - (3.0, 3.0)
-# - (-1.2, -1.0)
-# Los datos para el entrenamiento del Adaline resultan de la siguiente manera
-#       +-----------------+
-#       |   x  | b |   y  |
-#       +------+---+------+
-#       |  1.0 | 1 |  0.5 |
-#       +------+---+------+
-#       |  1.5 | 1 |  1.1 |
-#       +------+---+------+
-#       |  3.0 | 1 |  3.0 |
-#       +------+---+------+
-#       | -1.2 | 1 | -1.0 |
-#       +-----------------+
-# con las posiciones en 'x' como los datos de entrada y las posiciones en 'y'
-# como la salida deseada, y 'b' como la entrada fija del bias.
+# Desarrollar un código en el que un Adaline sea capaz de aproximar una
+# función generada con datos aleatorios utilizando dos tipos de métodos,
+# el SGD (Stochastic Gradient Descent) y BDG (Batch Gradient Descent)
+# para comparar su funcionamiento
+#############
+#### SGD ####
+#############
+# Realiza un ajuste de pesos y bias con cada uno de los patrones de
+# entrada, al hacer esto, se ajusta en pocas epocas, pero con muchos
+# patrones de entrada se vuelve lento y tarda más tiempo en terminar
+# el entrenamiento y alcanzar un ajuste óptimo.
+#############
+#### BGD ####
+#############
+# Este método realiza el ajuste de pesos y bias utilizando todos los
+# patrones de entrada, debido a esto, el ajuste optimo tarda más
+# epocas en ser alcanzado, pero al haber muchos patrones de entrada
+# no afecta mucho al tiempo de entrenamiento ni a los recursos
+# computacionales
 
 # Importacion de modulos
 import numpy as np
@@ -28,13 +27,16 @@ import matplotlib.pyplot as plt
 import pickle
 from adaline import Adaline
 
-x = np.array([1.0, 1.5, 3.0, -1.2]) # Datos de entrada
-y = np.array([0.5, 1.1, 3.0, -1.0]) # Salida deseada
-epocas = 100 # Numero de iteraciones deseadas
-eta = 0.05 # Factor de aprendizaje
+xl, xu = -0.02, 0.02
+n = 1000
+x = np.linspace(0,1,n) # Datos de entrada
+y = (1-x) + (xl+(xu-xl)*np.random.randn(n)) # Salida deseada
+eta = 1e-1 # Factor de aprendizaje
+epocas = 1000 # Numero de iteraciones deseadas
+solver = 'BGD'
 
 nn = Adaline() # Objeto de tipo Adaline
-J = nn.fit(x, y, eta, epocas) # Entrenamiento del Adaline
+J = nn.fit(x, y, eta, epocas, solver) # Entrenamiento del Adaline
 yp = nn.predict(x) # Prediccion de los datos de entrada
 
 w, b = nn.w, nn.b # Pesos y bias obtenidos por la red
