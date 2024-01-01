@@ -2,29 +2,17 @@
 
 # Ian Mu;oz Nu;ez - Adaline
 # Desarrollar un código en el que un Adaline sea capaz de aproximar una
-# función generada con datos aleatorios utilizando dos tipos de métodos,
-# el SGD (Stochastic Gradient Descent) y BDG (Batch Gradient Descent)
-# para comparar su funcionamiento
-#############
-#### SGD ####
-#############
-# Realiza un ajuste de pesos y bias con cada uno de los patrones de
-# entrada, al hacer esto, se ajusta en pocas epocas, pero con muchos
-# patrones de entrada se vuelve lento y tarda más tiempo en terminar
-# el entrenamiento y alcanzar un ajuste óptimo.
-#############
-#### BGD ####
-#############
-# Este método realiza el ajuste de pesos y bias utilizando todos los
-# patrones de entrada, debido a esto, el ajuste optimo tarda más
-# epocas en ser alcanzado, pero al haber muchos patrones de entrada
-# no afecta mucho al tiempo de entrenamiento ni a los recursos
-# computacionales
+# función generada con datos aleatorios utilizando ahora el método
+# mBGD (mini-Batch Gradient Descent), esta generaliza los metodos SGD
+# y BGD, pues dependiendo el tamaño de los mini-lotes que se elige, la
+# neurona se puede entrenar con un algoritmo parecido a un SGD o BGD
+# (si se selecciona un tamaño de lote de 1, el algoritmo se comporta
+# como SGD, si se elige un tamaño de lote del número de patrones de
+# entrada, el algoritmo funcionara como un BGD.
 
 # Importacion de modulos
 import numpy as np
 import matplotlib.pyplot as plt
-import pickle
 from adaline import Adaline
 
 xl, xu = -0.02, 0.02
@@ -33,10 +21,10 @@ x = np.linspace(0,1,n) # Datos de entrada
 y = (1-x) + (xl+(xu-xl)*np.random.randn(n)) # Salida deseada
 eta = 1e-1 # Factor de aprendizaje
 epocas = 1000 # Numero de iteraciones deseadas
-solver = 'BGD'
+batch_size = n # Tamano de los lotes
 
 nn = Adaline() # Objeto de tipo Adaline
-J = nn.fit(x, y, eta, epocas, solver) # Entrenamiento del Adaline
+J = nn.fit(x, y, eta, epocas, batch_size) # Entrenamiento del Adaline
 yp = nn.predict(x) # Prediccion de los datos de entrada
 
 w, b = nn.w, nn.b # Pesos y bias obtenidos por la red
