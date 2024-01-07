@@ -2,8 +2,7 @@
 
 # Ian Mu;oz Nu;ez - Adaline
 # Desarrollar un código en el que una neurona sea capaz de
-# clasificar patrones de entrada con una función AND
-# utilizando la función logística:
+# aproximar patrones de entrada con la función logística:
 #           1
 # y = -------------
 #     1 + exp(-a*v)
@@ -13,8 +12,10 @@ import numpy as np
 class Adaline:
     # Funcion para entrenar el Adaline
     def fit(self, x, y, eta, epocas):
-        self.w = np.random.rand(x.shape[0], y.shape[0]) # Pesos sinapticos
-        self.b = np.random.rand(1, y.shape[0]) # Bias
+        xl, xu = -5, 0 # Limites inferior y superior para los pesos
+        self.w = xl+(xu-xl)*np.random.rand(x.shape[0], y.shape[0]) # Pesos sinapticos
+        xl, xu = 0, 5 # Limites inferior y superior para el bias
+        self.b = xl+(xu-xl)*np.random.rand(1, y.shape[0]) # Bias
         self.a = 1 # Valor para definir la pendiente de la funcion logistica
 
         p = x.shape[1] # Numero de patrones de entrada
