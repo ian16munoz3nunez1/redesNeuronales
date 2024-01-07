@@ -1,40 +1,35 @@
 #!/bin/python3
 
 # Ian Mu;oz Nu;ez - Adaline
-# Desarrollar un código en el que un Adaline sea capaz de aproximar una
-# función generada con datos aleatorios utilizando ahora el método
-# mBGD (mini-Batch Gradient Descent), esta generaliza los metodos SGD
-# y BGD, pues dependiendo el tamaño de los mini-lotes que se elige, la
-# neurona se puede entrenar con un algoritmo parecido a un SGD o BGD
-# (si se selecciona un tamaño de lote de 1, el algoritmo se comporta
-# como SGD, si se elige un tamaño de lote del número de patrones de
-# entrada, el algoritmo funcionara como un BGD.
+# Desarrollar un código en el que una neurona sea capaz de
+# clasificar patrones de entrada con una función AND
+# utilizando la función logística:
+#           1
+# y = -------------
+#     1 + exp(-a*v)
 
 # Importacion de modulos
 import numpy as np
 import matplotlib.pyplot as plt
 from adaline import Adaline
 
-xl, xu = -0.02, 0.02
-n = 1000
-x = np.linspace(0,1,n) # Datos de entrada
-y = (1-x) + (xl+(xu-xl)*np.random.randn(n)) # Salida deseada
+x = np.array([[0, 0, 1, 1],
+              [0, 1, 0, 1]]) # Datos de entrenamiento
+y = np.array([[0, 0, 0, 1]]) # Salida deseada
 eta = 1e-1 # Factor de aprendizaje
 epocas = 1000 # Numero de iteraciones deseadas
-batch_size = n # Tamano de los lotes
 
 nn = Adaline() # Objeto de tipo Adaline
-J = nn.fit(x, y, eta, epocas, batch_size) # Entrenamiento del Adaline
-yp = nn.predict(x) # Prediccion de los datos de entrada
+J = nn.fit(x, y, eta, epocas) # Entrenamiento del Adaline
+yp = nn.classify(x) # Prediccion de los datos de entrada
 
-w, b = nn.w, nn.b # Pesos y bias obtenidos por la red
+w1, w2, b = nn.w[0,0], nn.w[1,0], nn.b # Pesos y bias obtenidos por la red
 xl, xu = min(x.ravel())-0.1, max(x.ravel())+0.1 # Limites inferior y superior
-t = np.arange(xl, xu, 0.1) # Arreglo de valores para el hiperplano separador
+v = np.array([np.arange(xl, xu, 0.1)]) # Arreglo de valores para el hiperplano separador
 
-px = np.array([0, -b/w]) # Posiciones en 'x' para los puntos que definen al hiperplano
-py = np.array([b, 0]) # Posiciones en 'y' para los puntos que definen al hiperplano
-m = (py[1]-py[0])/(px[1]-px[0]) # Pendiente del hiperplano
-f = m*(t-px[0]) + py[0] # Funcion del hiperplano
+m = -w1/w2 # Pendiente del hiperplano
+b = -b/w2 # Coeficiente del hiperplano
+f = m*v + b # Funcion del hiperplano separador
 
 plt.figure(1)
 plt.grid()
@@ -42,16 +37,15 @@ plt.axis('equal') # Muestra la escala de los ejes igual
 plt.axis([xl, xu, xl, xu]) # Limite de los ejes 'x' y 'y'
 
 # Grafica de los datos de entrada y su clasificacion
-plt.plot(x, y, 'bo', markersize=4) # Datos de entrada y salida deseada
-plt.plot(px, py, 'go', markersize=4) # Puntos del hiperplano
-plt.plot(x, yp, 'yo', markersize=4) # Prediccion
-plt.plot(t, f, 'r-', linewidth=2) # Hiperplano
+plt.plot(x[0,yp[0]==1], x[1,yp[0]==1], 'yo', markersize=8)
+plt.plot(x[0,yp[0]==0], x[1,yp[0]==0], 'go', markersize=8)
+plt.plot(v[0], f[0], 'r-', linewidth=2) # Grafica del hiperplano separador
 
 # Informacion de la grafica
 plt.title("El Adaline como aproximador", fontsize=20)
 plt.xlabel('x', fontsize=15)
 plt.ylabel('y', fontsize=15)
-plt.legend(['Datos de entrada y salida', '$Puntos del hiperplano$', 'Prediccion', 'Hiperplano'])
+plt.legend(['$c_0$', '$c_1$', 'Hiperplano'])
 
 plt.figure(2)
 plt.grid()
