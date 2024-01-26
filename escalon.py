@@ -7,21 +7,25 @@ import matplotlib.pyplot as plt
 n = 1000
 v = np.linspace(-10, 10, n) # Variable independiente
 
-phi = np.zeros(n) # Funcion o variable dependiente
+y = np.zeros(n) # Funcion o variable dependiente
 for i in range(n):
     if v[i] >= 0:
-        phi[i] = 1
+        y[i] = 1
     else:
-        phi[i] = 0
+        y[i] = 0
+dy = np.zeros(n) # Derivada de la funcion
 
-plt.figure(1)
-plt.grid()
+fig, ax = plt.subplots(2,1, sharex=True)
 
-plt.plot(v, phi, 'g-', linewidth=2)
+ax[0].grid(True)
+ax[0].plot(v, y, 'g-', linewidth=2)
+ax[0].set_title("Funcion escalon o umbral", fontsize=20)
+ax[0].set_ylabel('$\\varphi(v)$', fontsize=15)
 
-plt.title("Funcion escalon o umbral", fontsize=20)
-plt.xlabel('v', fontsize=15)
-plt.ylabel('$\\varphi(v)$', fontsize=15)
+ax[1].grid(True)
+ax[1].plot(v, dy, 'r-', linewidth=2)
+ax[1].set_xlabel('v', fontsize=15)
+ax[1].set_ylabel('$\\varphi\'(v)$', fontsize=15)
 
 plt.show()
 

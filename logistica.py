@@ -7,16 +7,20 @@ import matplotlib.pyplot as plt
 v = np.linspace(-10, 10, 1000) # Variable independiente
 
 a = 1 # Parametro que determina la pendiente de la funcion
-phi = 1/(1 + np.exp(-a*v)) # Funcion o variable dependiente
+y = 1/(1 + np.exp(-a*v)) # Funcion o variable dependiente
+dy = a*y*(1-y) # Derivada de la funcion
 
-plt.figure(1)
-plt.grid()
+fig, ax = plt.subplots(2,1, sharex=True)
 
-plt.plot(v, phi, 'g-', linewidth=2)
+ax[0].grid(True)
+ax[0].plot(v, y, 'g-', linewidth=2)
+ax[0].set_title("Funcion logistica", fontsize=20)
+ax[0].set_ylabel('$\\varphi(v)$', fontsize=15)
 
-plt.title("Funcion logistica", fontsize=20)
-plt.xlabel('v', fontsize=15)
-plt.ylabel('$\\varphi(v)$', fontsize=15)
+ax[1].grid(True)
+ax[1].plot(v, dy, 'r-', linewidth=2)
+ax[1].set_xlabel('v', fontsize=15)
+ax[1].set_ylabel('$\\varphi\'(v)$', fontsize=15)
 
 plt.show()
 
