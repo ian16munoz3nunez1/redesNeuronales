@@ -2,11 +2,17 @@
 
 # Ian Mu;oz Nu;ez - Perceptron Unicapa
 # Desarrollar un codigo en el que un perceptron unicapa sea
-# capaz de clasificar 4 grupos utilizando la funcion
-# logistica y el esquema One-vs-All
-#           1
-# y = -------------
-#     1 + exp(-a*v)
+# capaz de clasificar multiples grupos utilizando la funcion
+# softmax
+#            z_j
+#           e
+# y_j = ----------
+#         m
+#        ---
+#        \    z_i
+#        /   e
+#        ---
+#        i=1
 
 import numpy as np
 from colorama import init
@@ -16,7 +22,7 @@ init(autoreset=True)
 
 class OLP:
     def __init__(self, n_inputs, n_outputs, function):
-        functions = ['step', 'linear', 'logistic', 'softmax'] # Funciones para el la red
+        functions = ['step', 'linear', 'logistic', 'softmax'] # Funciones para la red
         # Si se elige una funcion no disponible se muestra un error
         if not function.lower() in functions:
             print(Fore.RED + f"Function \'{function}\' not in available functions")
@@ -47,7 +53,7 @@ class OLP:
     def function(self, v, a=1):
         # Funcion escalon
         if self.f == 0: # step
-            y = 1*(y>=0)
+            y = 1*(v>=0)
             dy = np.ones(v.shape)
             return y, dy
 
