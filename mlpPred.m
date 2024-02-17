@@ -10,5 +10,5 @@ function yp = mlpPred(model, x)
         yp = tanh((w{l}'*yp) + b{l});
     end
     v = (w{L}'*yp) + b{L};
-    yp = 1./(1 + exp(-v));
+    yp = v;
 end
