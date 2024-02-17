@@ -18,6 +18,7 @@ function [model, loss] = mlp(x, y, k, eta, epocas)
     phi = cell(L+1,1); % Arreglo para las entradas/salidas de las capas
     phi{1} = x; % Entrada de la red
 
+    p = size(x,2);
     for epoca= 1:epocas
         % Etapa hacia adelante
         for l= 1:L-1
@@ -25,10 +26,10 @@ function [model, loss] = mlp(x, y, k, eta, epocas)
             phi{l+1} = tanh(v);
         end
         v = (w{L}'*phi{L}) + b{L};
-        phi{L+1} = 1./(1 + exp(-v));
+        phi{L+1} = v;
 
         % Etapa hacia atras
-        delta{L} = (y - phi{L+1}).*(phi{L+1}.*(1-phi{L+1}));
+        delta{L} = (y - phi{L+1}).*1;
         loss(epoca) = dot(delta{L}(:), delta{L}(:));
         for l= L-1:-1:1
             df = (1-phi{l+1}).*(1+phi{l+1});
@@ -37,8 +38,8 @@ function [model, loss] = mlp(x, y, k, eta, epocas)
 
         % Ajuste de pesos y bias
         for l= 1:L
-            w{l} = w{l} + eta*(phi{l}*delta{l}');
-            b{l} = b{l} + eta*sum(delta{l},2);
+            w{l} = w{l} + (eta/p)*(phi{l}*delta{l}');
+            b{l} = b{l} + (eta/p)*sum(delta{l},2);
         end
     end
 

@@ -60,8 +60,8 @@ class MLP:
 
             # Ajuste de pesos y bias
             for l in range(1, self.L+1):
-                self.w[l] += eta*np.matmul(self.phi[l-1], self.delta[l].T)
-                self.b[l] += eta*np.sum(self.delta[l],1).reshape(-1,1)
+                self.w[l] += (eta/p)*np.matmul(self.phi[l-1], self.delta[l].T)
+                self.b[l] += (eta/p)*np.sum(self.delta[l],1).reshape(-1,1)
 
         return loss
 
