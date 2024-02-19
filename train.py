@@ -10,36 +10,49 @@ pi = np.pi
 
 # print(list(colormaps)) # Funcion para listar los espacios de color de matplotlib
 
-n = 50
-xl, xu = 0, 2*pi
+clases = 6 # Numero de clases deseadas
+p = 40 # Numero de patrones de entrada
+x = np.zeros((2, p*clases)) # Patrones de entrada
+y = np.zeros((clases, p*clases)) # Salida deseada
+
+# Llenado de los patrones de entrada y la salida deseada
+xl, xu = -2, 2
+for i in range(clases):
+    seed = xl + (xu-xl)*np.random.rand(2,1)
+    x[:, p*i:p*(i+1)] = seed + 0.2*np.random.rand(2,p)
+    y[i, p*i:p*(i+1)] = np.ones((1, p))
+
+nn = MLP([(2,), (10, 'tanh'), (20, 'tanh'), (6,'softmax')]) # Objeto de tipo Multi-Layer Perceptron
+loss = nn.fit(x, y, 1e-2, 5000) # Entrenamiento de la red
+yp = nn.predict(x) # Prediccion de la red
+
+colors = [[1,0,0], [0,1,0], [0,0,1], [1,1,0], [1,0,1], [0,1,1]] # Colores para diferenciar los grupos
+
+fig, ax = plt.subplots(1,3)
+
+ax[0].grid()
+yc = np.argmax(y, axis=0)
+for i in range(x.shape[1]):
+    ax[0].plot(x[0,i], x[1,i], 'o', c=colors[yc[i]], markersize=8)
+ax[0].set_title("Problema original", fontsize=20)
+
+ax[1].grid()
+yc = np.argmax(yp, axis=0)
+for i in range(x.shape[1]):
+    ax[1].plot(x[0,i], x[1,i], 'o', c=colors[yc[i]], markersize=8)
+ax[1].set_title("Prediccion de la red", fontsize=20)
+
+n = 100
 X, Y = np.meshgrid(np.linspace(xl, xu, n), np.linspace(xl, xu, n))
-Z = 2*np.cos(X) - np.sin(Y)
 x = np.array([X.ravel(), Y.ravel()])
-y = Z.ravel()
-
-nn = MLP([(2,), (10, 'tanh'), (20, 'tanh'), (1,'linear')]) # Objeto de tipo Multi-Layer Perceptron
-loss = nn.fit(x, y, 1e-2, 5000)
 yp = nn.predict(x)
-
-plt.figure(1)
-ax = plt.axes(projection='3d')
-
-ax.plot_surface(X, Y, Z, cmap=plt.cm.viridis)
-ax.set_title("2cos(x) - sin(y)", fontsize=20)
-ax.set_xlabel('x', fontsize=15)
-ax.set_ylabel('y', fontsize=15)
-ax.set_zlabel('z', fontsize=15)
+ax[2].grid()
+yc = np.argmax(yp, axis=0)
+for i in range(x.shape[1]):
+    ax[2].plot(x[0,i], x[1,i], 'o', c=colors[yc[i]], markersize=4)
+ax[2].set_title("Areas de clasificacion", fontsize=20)
 
 plt.figure(2)
-ax = plt.axes(projection='3d')
-
-ax.plot_surface(X, Y, yp.reshape(X.shape), cmap=plt.cm.viridis)
-ax.set_title("Prediccion del MLP", fontsize=20)
-ax.set_xlabel('x', fontsize=15)
-ax.set_ylabel('y', fontsize=15)
-ax.set_zlabel('z', fontsize=15)
-
-plt.figure(3)
 plt.grid()
 
 plt.plot(loss, 'g-', linewidth=2)

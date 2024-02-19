@@ -26,10 +26,11 @@ function [model, loss] = mlp(x, y, k, eta, epocas)
             phi{l+1} = tanh(v);
         end
         v = (w{L}'*phi{L}) + b{L};
-        phi{L+1} = v;
+        e = exp(v - max(v));
+        phi{L+1} = e./sum(e,1);
 
         % Etapa hacia atras
-        delta{L} = (y - phi{L+1}).*1;
+        delta{L} = (y - phi{L+1}).*ones(size(v));
         loss(epoca) = dot(delta{L}(:), delta{L}(:));
         for l= L-1:-1:1
             df = (1-phi{l+1}).*(1+phi{l+1});
