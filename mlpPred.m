@@ -10,5 +10,6 @@ function yp = mlpPred(model, x)
         yp = tanh((w{l}'*yp) + b{l});
     end
     v = (w{L}'*yp) + b{L};
-    yp = v;
+    e = exp(v - max(v));
+    yp = e./sum(e,1);
 end
