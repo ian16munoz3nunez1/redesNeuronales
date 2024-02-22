@@ -13,13 +13,6 @@ class MLP:
         functions = ['step', 'linear', 'relu', 'tanh', 'logistic', 'softmax'] # Funciones de activacion para la red
         self.L = len(k)-1 # Numero de capas ocultas
 
-        # self.w = [None]*(n+1)
-        # self.b = [None]*(n+1)
-        # self.f = [None]*(n+1)
-        # self.phi = [None]*(n+1)
-        # self.dphi = [None]*(n+1)
-        # self.delta = [None]*(n+1)
-
         self.w = {} # Arreglo para los pesos sinapticos de las capas
         self.b = {} # Arreglo para los bias de las capas
         self.f = {} # Arreglo para las funciones de activacion
@@ -108,4 +101,26 @@ class MLP:
 
         else:
             print(Fore.RED + f"Function \"{f}\" not available")
+
+    # Metricas de regresion
+    def score(self, y, yp, error):
+        n = y.shape[1]
+        if error.upper() == 'MAE':
+            return np.mean(np.abs(y - yp))
+
+        elif error.upper() == 'MSE':
+            return np.mean((y-yp)**2)
+
+        elif error.upper() == 'MEDAE':
+            return np.median(np.abs(y-yp))
+
+        elif error.upper() == 'R2':
+            mean = np.mean(y)
+            return 1 - (np.sum((y-yp)**2)/np.sum((y-mean)**2))
+
+        elif error.upper() == 'EVS':
+            return 1 - (np.var(y-yp)/np.var(y))
+
+        else:
+            print(Fore.RED + f"Unrecognized metric \'{error}\'")
 
