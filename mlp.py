@@ -116,8 +116,13 @@ class MLP:
         else:
             print(Fore.RED + f"Function \"{f}\" not available")
 
+    # 'score' regresa la probabilidad del buen entrenamiento de la red
+    def score(self, x, y):
+        yp = self.predict(x)
+        return self.metrics(y, yp, 'R2')
+
     # Metricas de regresion
-    def score(self, y, yp, error):
+    def metrics(self, y, yp, error):
         n = y.shape[1]
         if error.upper() == 'MAE':
             return np.mean(np.abs(y - yp))
