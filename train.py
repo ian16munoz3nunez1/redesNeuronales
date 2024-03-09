@@ -15,7 +15,7 @@ x = np.array([df['x']])
 y = np.array([df['y']])
 
 nn = MLP([(1,), (1,'linear')])
-loss = nn.fit(x, y, 1e-1, 500)
+loss = nn.fit(x, y, 1e-1, 200, batch_size=50)
 yp = nn.predict(x)
 
 plt.figure(1)
