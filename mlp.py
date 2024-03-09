@@ -31,30 +31,44 @@ class MLP:
                 exit(1)
 
     # Funcion para entrenar la red
-    def fit(self, x, y, eta, epocas):
+    def fit(self, x, y, eta, epocas, batch_size=None):
         loss = np.zeros(epocas) # Arreglo para la funcion de perdida de la red
         p = x.shape[1] # Numero de patrones de entrada
         self.phi[0] = x # Entrada de la red
 
+        for l in range(1, self.L+1):
+            self.phi[l] = np.zeros((self.b[l].shape[0], p))
+            self.dphi[l] = np.zeros((self.b[l].shape[0], p))
+            self.delta[l] = np.zeros((self.phi[l].shape[0], self.phi[l].shape[1]))
+
+        if batch_size is None:
+            batch_size = p
+
         for epoca in range(epocas):
-            # Etapa hacia adelante
-            for l in range(1, self.L+1):
-                v = np.matmul(self.w[l].T, self.phi[l-1]) + self.b[l]
-                self.phi[l], self.dphi[l] = self.function(self.f[l], v)
-                l += 1
+            xl, xu = 0, batch_size
+            while xl < p:
+                # Etapa hacia adelante
+                for l in range(1, self.L+1):
+                    v = np.matmul(self.w[l].T, self.phi[l-1][:,xl:xu]) + self.b[l]
+                    self.phi[l][:,xl:xu], self.dphi[l][:,xl:xu] = self.function(self.f[l], v)
+                    l += 1
 
-            # Etapa hacia atras
-            self.delta[self.L] = (y - self.phi[self.L])*self.dphi[self.L]
+                # Etapa hacia atras
+                self.delta[self.L][:,xl:xu] = (y[:,xl:xu] - self.phi[self.L][:,xl:xu])*self.dphi[self.L][:,xl:xu]
+                l = self.L-1
+                while l > 0:
+                    self.delta[l][:,xl:xu] = np.matmul(self.w[l+1], self.delta[l+1][:,xl:xu])*self.dphi[l][:,xl:xu]
+                    l -= 1
+
+                # Ajuste de pesos y bias
+                for l in range(1, self.L+1):
+                    self.w[l] += (eta/p)*np.matmul(self.phi[l-1][:,xl:xu], self.delta[l][:,xl:xu].T)
+                    self.b[l] += (eta/p)*np.sum(self.delta[l][:,xl:xu],1).reshape(-1,1)
+
+                xl += batch_size
+                xu += batch_size
+
             loss[epoca] = np.dot(self.delta[self.L].flatten(), self.delta[self.L].flatten())
-            l = self.L-1
-            while l > 0:
-                self.delta[l] = np.matmul(self.w[l+1], self.delta[l+1])*self.dphi[l]
-                l -= 1
-
-            # Ajuste de pesos y bias
-            for l in range(1, self.L+1):
-                self.w[l] += (eta/p)*np.matmul(self.phi[l-1], self.delta[l].T)
-                self.b[l] += (eta/p)*np.sum(self.delta[l],1).reshape(-1,1)
 
         return loss
 
