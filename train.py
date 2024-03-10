@@ -15,24 +15,36 @@ x = np.array([df['x']])
 y = np.array([df['y']])
 
 nn = MLP([(1,), (1,'linear')])
-print(f"Score: {nn.score(x, y)}")
-loss = nn.fit(x, y, 1e-1, 200, batch_size=50)
-print(f"Score: {nn.score(x, y)}")
+xTrain, xTest, yTrain, yTest = nn.train_test_split(x, y, train_size=0.7)
+
+loss = nn.fit(xTrain, yTrain, 1e-1, 200)
 yp = nn.predict(x)
+
+print(f"Train score: {nn.score(xTrain, yTrain)}")
+print(f"Test score: {nn.score(xTest, yTest)}")
+print(f"Loss: {loss[-1]}")
 
 plt.figure(1)
 plt.grid()
 
-plt.plot(x, y, 'bo', markersize=8)
+plt.plot(xTrain, yTrain, 'bo', markersize=8)
 plt.plot(x[0], yp[0], 'r-', linewidth=2)
 
-plt.title("Regresion lineal", fontsize=20)
+plt.title("Entrenamiento", fontsize=20)
 plt.xlabel('x', fontsize=15)
 plt.ylabel('y', fontsize=15)
 
-print(f"Loss: {loss[-1]}")
-
 plt.figure(2)
+plt.grid()
+
+plt.plot(xTest, yTest, 'bo', markersize=8)
+plt.plot(x[0], yp[0], 'r-', linewidth=2)
+
+plt.title("Generalizacion", fontsize=20)
+plt.xlabel('x', fontsize=15)
+plt.ylabel('y', fontsize=15)
+
+plt.figure(3)
 plt.grid()
 
 plt.plot(loss, 'g-', linewidth=2)

@@ -121,6 +121,20 @@ class MLP:
         yp = self.predict(x)
         return self.metrics(y, yp, 'R2')
 
+    # Funcion para regresar el muestras para entrenamiento y generalizacion
+    def train_test_split(self, x, y, train_size):
+        if train_size > 1:
+            print("Train size must be less than one")
+            exit(1)
+
+        p = x.shape[1]
+        n = int(np.floor(p*train_size))
+        permutation = np.random.permutation(p)
+        xTrain, yTrain = x[:,permutation[:n]], y[:,permutation[:n]]
+        xTest, yTest = x[:,permutation[n:]], y[:,permutation[n:]]
+
+        return xTrain, xTest, yTrain, yTest
+
     # Metricas de regresion
     def metrics(self, y, yp, error):
         n = y.shape[1]
