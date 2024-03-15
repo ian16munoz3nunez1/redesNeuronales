@@ -9,7 +9,8 @@ from colorama.ansi import Fore
 init(autoreset=True)
 
 class MLP:
-    def __init__(self, k):
+    def __init__(self, k, scaler=False):
+        self.scaler = scaler
         functions = ['step', 'linear', 'relu', 'tanh', 'logistic', 'softmax'] # Funciones de activacion para la red
         self.L = len(k)-1 # Numero de capas ocultas
 
@@ -32,6 +33,10 @@ class MLP:
 
     # Funcion para entrenar la red
     def fit(self, x, y, eta, epocas, batch_size=None):
+        if self.scaler:
+            x, self.ux, self.sx = self.scaled(x)
+            y, self.uy, self.sy = self.scaled(y)
+
         loss = np.zeros(epocas) # Arreglo para la funcion de perdida de la red
         p = x.shape[1] # Numero de patrones de entrada
         self.phi[0] = x # Entrada de la red
@@ -74,10 +79,14 @@ class MLP:
 
     # Funcion para regresar la prediccion de la red
     def predict(self, x):
+        x = (x-self.ux)/self.sx if self.scaler else x
+
         phi = np.array(x)
         for l in range(1, self.L+1):
             v = np.matmul(self.w[l].T, phi) + self.b[l]
             phi = self.function(self.f[l], v)[0]
+
+        phi = (phi*self.sy)+self.uy if self.scaler else phi
         return phi
 
     # Funciones de activacion y su derivada
@@ -124,7 +133,7 @@ class MLP:
     # Funcion para regresar el muestras para entrenamiento y generalizacion
     def train_test_split(self, x, y, train_size):
         if train_size > 1:
-            print("Train size must be less than one")
+            print(Fore.YELLOW + "[!] Train size must be less than one")
             exit(1)
 
         p = x.shape[1]
@@ -134,6 +143,12 @@ class MLP:
         xTest, yTest = x[:,permutation[n:]], y[:,permutation[n:]]
 
         return xTrain, xTest, yTrain, yTest
+
+    def scaled(self, x):
+        u = x.mean()
+        s = np.sqrt(np.sum((x-u)**2)/x.size)
+        x = (x-u)/s
+        return x, u, s
 
     # Metricas de regresion
     def metrics(self, y, yp, error):
