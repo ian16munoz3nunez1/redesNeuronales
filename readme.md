@@ -215,8 +215,8 @@ y = \varphi(v) = \max(0, v)
 \quad\quad
 \frac{d}{dv}y =\left\lbrace
 \begin{matrix}
-	1 & \text{si } v \geq 0 \\
-	0 & \text{si } v < 0
+    1 & \text{si } v \geq 0 \\
+    0 & \text{si } v < 0
 \end{matrix}
 \right.
 $$
@@ -229,8 +229,8 @@ $$
 \large
 y = \varphi(v) = \left\lbrace
 \begin{matrix}
-	0.1v & \text{si } v < 0 \\
-	v & \text{si } v \geq 0
+    0.1v & \text{si } v < 0 \\
+    v & \text{si } v \geq 0
 \end{matrix}
 \right.
 \quad\quad
@@ -238,11 +238,61 @@ y = \varphi(v) = \left\lbrace
 \quad\quad
 \frac{d}{dv}y = \left\lbrace
 \begin{matrix}
-	0.1 & \text{si } v < 0 \\
-	1 & \text{si } v \geq 0
+    0.1 & \text{si } v < 0 \\
+    1 & \text{si } v \geq 0
 \end{matrix}
 \right.
 $$
 
 Se utiliza solo en capas ocultas y especialmente en redes profundas. Corrige
 algunos detalles de la ***ReLU***.
+
+## La Neurona Artificial
+
+La neurona artificial se representa de la siguiente manera
+
+![](.src/neuron.png)
+
+Con $n$ entradas $x$, $n$ pesos sinápticos representados con $w$ y un bias $b$,
+la acumulación de todas estás señales representa un proceso sumatorio que da
+como resultado el valor $v$ que se encuentra debajo.
+
+$$
+v = w_1x_1 + w_2x_2 + \cdots + w_nx_n + b
+$$
+
+$$
+v = \sum_{i=1}^p \left[ w_i x_i \right] + b
+$$
+
+Representando las ecuaciones anteriores de forma vectorial se tiene lo
+siguiente:
+
+$$
+x =
+\begin{bmatrix}
+    x_1 \\
+    x_2 \\
+    \vdots \\
+    x_n
+\end{bmatrix}
+\quad\quad
+w =
+\begin{bmatrix}
+    w_1 \\
+    w_2 \\
+    \vdots \\
+    w_n
+\end{bmatrix}
+$$
+
+$$
+v = w^\top x + b
+$$
+
+Al final de la acumulatoria, se tiene un umbral o función de activación, con lo
+que se condiciona la salida de la neurona.
+
+$$
+y = \varphi (v)
+$$
