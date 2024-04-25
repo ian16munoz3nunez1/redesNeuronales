@@ -4,7 +4,7 @@
 
 ### Función ***Escalón***
 
-![](.src/escalon.png)
+![](.src/funcionesActivacion/escalon.png)
 
 $$
 \large
@@ -25,7 +25,7 @@ No muy utilizada actualmente.
 
 ### Función ***Lineal a Tramos***
 
-![](.src/linealATramos.png)
+![](.src/funcionesActivacion/linealATramos.png)
 
 $$
 \large
@@ -41,7 +41,7 @@ $$
 
 ### Función ***Logística***
 
-![](.src/logistica.png)
+![](.src/funcionesActivacion/logistica.png)
 
 $$
 \large
@@ -79,7 +79,7 @@ Se utiliza en cualquier capa pero sobretodo en la capa de salida para clasificac
 
 ### Función ***Signo***
 
-![](.src/signo.png)
+![](.src/funcionesActivacion/signo.png)
 
 $$
 \large
@@ -97,7 +97,7 @@ No muy utilizada actualmente.
 
 ### Función ***Tangente Hiperbólica***
 
-![](.src/tanH.png)
+![](.src/funcionesActivacion/tanH.png)
 
 $$
 \large
@@ -131,7 +131,7 @@ Se utiliza solo en capas ocultas.
 
 ### Función ***Lineal*** o ***Identidad***
 
-![](.src/lineal.png)
+![](.src/funcionesActivacion/lineal.png)
 
 $$
 \large
@@ -146,7 +146,7 @@ Se utiliza en la última capa para casos de regresión.
 
 ### Función ***Gaussiana***
 
-![](.src/gaussiana.png)
+![](.src/funcionesActivacion/gaussiana.png)
 
 $$
 \large
@@ -166,7 +166,7 @@ Se utiliza en arquitecturas específicas como en la ***RBF-NN***.
 
 ### Función ***Sinusoidal***
 
-![](.src/sinusoidal.png)
+![](.src/funcionesActivacion/sinusoidal.png)
 
 $$
 \large
@@ -180,7 +180,7 @@ $$
 
 ### Función ***Softplus***
 
-![](.src/softplus.png)
+![](.src/funcionesActivacion/softplus.png)
 
 $$
 \large
@@ -205,7 +205,7 @@ Se utiliza solo en capas ocultas y especialmente en redes profundas.
 
 ### Función ***ReLU (Rectified Linear Unit)***
 
-![](.src/relu.png)
+![](.src/funcionesActivacion/relu.png)
 
 $$
 \large
@@ -251,7 +251,7 @@ algunos detalles de la ***ReLU***.
 
 La neurona artificial se representa de la siguiente manera
 
-![](.src/neuron.png)
+![](.src/neuron/neuron.png)
 
 Con $n$ entradas $x$, $n$ pesos sinápticos representados con $w$ y un bias $b$,
 la acumulación de todas estás señales representa un proceso sumatorio que da
@@ -296,3 +296,185 @@ que se condiciona la salida de la neurona.
 $$
 y = \varphi (v)
 $$
+
+## El Perceptrón
+
+En el perceptrón, se tiene la misma estructura de la red neuronal.
+
+$$
+v = w_1x_1 + w_2x_2 + \cdots + w_nx_n + b
+$$
+
+$$
+v = \sum_{i=1}^p \left[ w_ix_i \right] + b
+$$
+
+Con
+
+$$
+x =
+\begin{bmatrix}
+    x_1 \\
+    x_2 \\
+    \vdots \\
+    x_n
+\end{bmatrix}
+\quad\quad\text{y}\quad\quad
+w =
+\begin{bmatrix}
+    w_1 \\
+    w_2 \\
+    \vdots \\
+    w_n
+\end{bmatrix}
+$$
+
+$$
+v = w^\top x + b
+$$
+
+En esta neurona se usa la función de activación de tipo escalón.
+
+$$
+y = \varphi (v) =
+\left\lbrace
+\begin{matrix}
+    1 & \text{si } v \geq 0 \\
+    0 & \text{si } v < 0
+\end{matrix}
+\right.
+$$
+
+### El Perceptrón en 2 dimensiones
+
+Para clasificar y dibujar un hiperplano separador en un espacio de 2
+dimensiones se tendría una representación del perceptrón como la siguiente.
+
+![](.src/perceptron/perceptron0.png)
+
+Así, se tendría el valor de $v$ como
+
+$$
+v = w_1x_1 + w_2x_2 + b
+$$
+
+Ya que la ecuación anterior se comporta como la ecuación de la recta
+
+$$
+0 = ax + by + c
+$$
+
+funciona para dibujar un hiperplano separador entre los patrones de entrada,
+como en el ejemplo siguiente
+
+![](.src/perceptron0.png)
+
+para dibujar el hiperplano, se despeja $x_2$ de la ecuación
+
+$$
+v = w_1x_1 + w_2x_2 + b
+$$
+
+resultando en
+
+$$
+x_2 = -\dfrac{w_1}{w_2}x_1 - \dfrac{b}{w_2} 
+$$
+
+Con $x_1$ siendo una variable que depende del tiempo.
+Observando la ecuación anterior, se parece mucho a la función
+
+$$
+y = mx + b
+$$
+
+Que es otra manera de representar una recta, con esto, se tiene el hiperplano
+que muestra la forma en que el perceptrón clasificó los datos de entrada.
+
+### El Perceptrón en 3 dimensiones
+
+Para un caso de 3 dimensiones, se tiene la siguiente ecuación
+
+$$
+x_3 = -\dfrac{w_1x_1}{w_3} - \dfrac{w_2x_2}{w_3} - \dfrac{b}{w_3}
+$$
+
+Con la representación del perceptrón de la siguiente manera
+
+![](.src/perceptron/perceptron1.png)
+
+Un ejemplo de un perceptrón usado en un caso con datos de entrada de 3
+dimensiones
+
+![](.src/perceptron/perceptron1x.png)
+
+### Algoritmo del Perceptrón
+
+```
+for epoch in {1, 2, ..., epochs}
+    for i in {1, 2, ..., p}
+        v = w*x[i] + b
+        y = phi(v)
+        e = d[i] - y
+        
+        if e != 0
+            w <- w + eta*e*x[i]
+            b <- b + eta*e
+```
+
+En donde `epochs` es el número de epocas deseadas, `epoch` es la epoca actual,
+`p` es el número de datos de entrada, `d` es la salida deseada y `e` la
+diferencia entre la salida deseada y la obtenida, por último, `eta` es el
+factor de aprendizaje del perceptrón.
+
+### Ejercicios del Perceptrón
+
+[Compuerta AND](https://github.com/ian16munoz3nunez1/redesNeuronales/tree/8f2e6eb6cb54249cb43ad67647a75e61515f2d84)
+
+![](.src/perceptron/perceptron0x.png)
+
+[Resolver A(B+C)](https://github.com/ian16munoz3nunez1/redesNeuronales/tree/7680adffbc0ac76376cf402cfb098e3d4e0e149b)
+
+![](.src/perceptron/perceptron1x.png)
+
+[Clasificación de 4 grupos](https://github.com/ian16munoz3nunez1/redesNeuronales/tree/e455500d96bbbdc9bc1fd6e7c599eb457e330739)
+
+![](.src/perceptron/perceptron2x.png)
+
+## Anexo
+
+### Perceptrón
+
+$$
+v = \sum_{i=1}^p \left[ w_ix_i \right] + b
+$$
+
+$$
+v = w^\top x + b
+$$
+
+$$
+y = \varphi (v)
+$$
+
+$$
+e = d_i - y
+$$
+
+$$
+w \leftarrow w + \eta e x_i
+$$
+
+$$
+b \leftarrow b + \eta e
+$$
+
+$$
+x_2 = -\dfrac{w_1}{w_2}x_1 - \dfrac{b}{w_2} 
+$$
+
+$$
+x_3 = -\dfrac{w_1x_1}{w_3} - \dfrac{w_2x_2}{w_3} - \dfrac{b}{w_3}
+$$
+
+

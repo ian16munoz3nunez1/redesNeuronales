@@ -1,5 +1,4 @@
-digraph neuron {
-// strict graph {
+digraph perceptron {
     graph [
         layout = dot
         rankdir = "LR"
@@ -8,19 +7,17 @@ digraph neuron {
     x1[label=<x<sub>1</sub>>,shape="plaintext"]
     x2[label=<x<sub>2</sub>>,shape="plaintext"]
     x3[label=<x<sub>3</sub>>,shape="plaintext"]
-    xn[label=<x<sub>n</sub>>,shape="plaintext"]
     bias[label="+1",shape="none"]
 
     neuron[label=<&Sigma;>,shape="circle",fontsize=40]
-    funcion[label=<&phi;>,shape="circle",fontsize=24]
+    function[label=<&phi;>,shape="circle",fontsize=24]
     end[label="y",shape="none",fontsize=24]
 
     x1 -> neuron[label=<w<sub>1</sub>>]
     x2 -> neuron[label=<w<sub>2</sub>>]
     x3 -> neuron[label=<w<sub>3</sub>>]
-    xn -> neuron[label=<w<sub>n</sub>>]
     bias -> neuron[label=<<i>b</i>>,shape="none",fontsize=12]
-    neuron -> funcion[label="v"]
-    funcion -> end
+    neuron -> function[label="v"]
+    function -> end
 
 }

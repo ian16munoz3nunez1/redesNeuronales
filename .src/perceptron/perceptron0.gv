@@ -1,0 +1,21 @@
+digraph perceptron {
+    graph [
+        layout = dot
+        rankdir = "LR"
+    ];
+
+    x1[label=<x<sub>1</sub>>,shape="plaintext"]
+    x2[label=<x<sub>2</sub>>,shape="plaintext"]
+    bias[label="+1",shape="none"]
+
+    neuron[label=<&Sigma;>,shape="circle",fontsize=40]
+    function[label=<&phi;>,shape="circle",fontsize=24]
+    end[label="y",shape="none",fontsize=24]
+
+    x1 -> neuron[label=<w<sub>1</sub>>]
+    x2 -> neuron[label=<w<sub>2</sub>>]
+    bias -> neuron[label=<<i>b</i>>,shape="none",fontsize=12]
+    neuron -> function[label="v"]
+    function -> end
+
+}
