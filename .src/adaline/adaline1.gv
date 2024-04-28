@@ -1,0 +1,17 @@
+digraph adaline {
+    graph [
+        layout = dot
+        rankdir = "LR"
+    ]
+
+    x[label="x",shape="plaintext"]
+    bias[label="+1",shape="none"]
+
+    neuron[label=<&Sigma;>,shape="circle",fontsize=40]
+    end[label="y",shape="none",fontsize=24]
+
+    x -> neuron[label=<<i>w</i>>]
+    bias -> neuron[label=<<i>b</i>>]
+    neuron -> end[label="v"]
+
+}
