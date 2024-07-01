@@ -839,6 +839,108 @@ $$
 \end{matrix}
 $$
 
+#### Gradiente descendente usando la entropía cruzada binaria
+
+Existe otra forma de obtener el gradiente descendente de la neurona logística,
+esta es con la entropía cruzada binaria, su función es la siguiente:
+
+$$
+E_3 = - \left[ d\log(y) + (1-d)\log(1-y) \right]
+\quad\quad
+\begin{matrix}
+    v & = & w^\top x + b \\
+    y & = & \sigma(v) = \frac{1}{1+e^{-v}}
+\end{matrix}
+$$
+
+Se tiene la siguiente derivada parcial
+
+$$
+\dfrac{\partial}{\partial w_i} E_3 = - \left[ d\cancel{\frac{1}{y}}(\cancel{y}(1-y))x_i - (1-d)\cancel{\frac{1}{1-y}}(y\cancel{(1-y)})x_i \right]
+$$
+
+$$
+\frac{\partial}{\partial w_i} E_3 = - \left[ d(1-y) - y(1-d) \right] x_i
+$$
+
+$$
+\frac{\partial}{\partial w_i} E_3 = -x_i \left[ d - dy - y + dy \right]
+$$
+
+Así, se tiene como resultado que la derivada parcial de $E_3$ es
+
+$$
+\begin{matrix}
+    \dfrac{\partial}{\partial w_i}E_3 & = & - (d-y) x_i \\
+    \dfrac{\partial}{\partial b}E_3 & = & - (d-y)
+\end{matrix}
+$$
+
+Usando el error de entrenamiento por lote
+
+$$
+E_2 = \dfrac{1}{2p} \sum_{i=1}^p \left( d^{(i)} - y^{(i)} \right)^2
+$$
+
+Se tendría el siguiente gradiente descendente
+
+$$
+\begin{matrix}
+    w & \longleftarrow & w + \dfrac{\eta}{p} \left[ (D-Y) \odot (Y \odot (1-Y)) \right] X^\top \\
+    \\
+    b & \longleftarrow & b + \dfrac{\eta}{p} \sum_{i=1}^p \Big(d^{(i)}-y^{(i)}\Big) \Big(y^{(i)}(1-y^{(i)})\Big)
+\end{matrix}
+$$
+
+Estos últimos son funciones diferentes a las vistas anteriormente, pero si se
+usa la entropía cruzada binaria se tiene el siguiente gradiente descendente
+
+$$
+E_3 = -\dfrac{1}{p} \sum_{i=1}^p \Big[ d^{(i)}\log(y^{(i)}) + \big(1-d^{(i)}\big)\log(1-y^{(i)}) \Big]
+$$
+
+Así, se tienen las siguientes funciones
+
+$$
+\begin{matrix}
+    w & \longleftarrow & w + \dfrac{\eta}{p} \Big( D-Y \Big) X^\top \\
+    \\
+    b & \longleftarrow & b + \dfrac{\eta}{p} \sum \Big( d^{(i)}-y^{(i)} \Big)
+\end{matrix}
+$$
+
+### Regla Delta
+
+- Conocer si la función es lineal o no lineal
+- Conocer el rango de la función
+- Saber si la función es diferenciable
+- Saber si la función es monótona
+- Si aproxima la identidad cerca del origen
+
+$$
+L(d, y) = \frac{1}{2} \big(d - y\big)^2
+\quad\quad
+\text{Problema de optimización}
+$$
+
+$$
+\begin{matrix}
+    w & \leftarrow & w - \eta \nabla_w L(d, y) \\
+    b & \leftarrow & b - \eta \dfrac{\partial}{\partial b} L(d, y)
+\end{matrix}
+\quad\quad
+\text{Algoritmo de optimización}
+$$
+
+$$
+\begin{matrix}
+    w & \leftarrow & w + \eta\big(d-y\big) \left( \dfrac{d}{dv}y \right)x \\
+    b & \leftarrow & b + \eta\big(d-y\big) \left( \dfrac{d}{dv}y \right)
+\end{matrix}
+\quad\quad
+\text{Ecuaciones de actualización}
+$$
+
 ## Anexo
 
 ### Perceptrón
