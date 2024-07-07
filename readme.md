@@ -941,6 +941,414 @@ $$
 \text{Ecuaciones de actualización}
 $$
 
+## Red Neuronal Unicapa
+
+En una red neuronal, cada neurona se representa como un nodo
+
+![](.src/OLN/oln0.png)
+
+### Notación
+
+$$
+x =
+\begin{bmatrix}
+    x_1 \\
+    x_2 \\
+    \vdots \\
+    x_n
+\end{bmatrix} \in \mathbb{R}^n
+\quad\quad
+w =
+\begin{bmatrix}
+    w_1 \\
+    w_2 \\
+    \vdots \\
+    w_n
+\end{bmatrix} \in \mathbb{R}^n
+\quad\quad
+b \in \mathbb{R}
+$$
+
+$$
+y = \varphi( w^\top x + b ) = \varphi
+\left(
+\begin{bmatrix}
+    w_1 & w_2 & \cdots & w_n
+\end{bmatrix}
+\begin{bmatrix}
+    x_1 \\
+    x_2 \\
+    \vdots \\
+    x_n
+\end{bmatrix} + b
+\right)
+$$
+
+### Notación
+
+![](.src/OLN/oln1.png)
+
+$$
+x =
+\begin{bmatrix}
+    x_1 \\
+    x_2 \\
+    \vdots \\
+    x_n
+\end{bmatrix} \in \mathbb{R}^n
+\quad\quad
+y =
+\begin{bmatrix}
+    y_1 \\
+    y_2 \\
+    \vdots \\
+    y_m
+\end{bmatrix} \in \mathbb{R}^m
+\quad\quad
+b =
+\begin{bmatrix}
+    b_1 \\
+    b_2 \\
+    \vdots \\
+    b_m
+\end{bmatrix} \in \mathbb{R}^m
+$$
+
+$$
+w =
+\begin{bmatrix}
+    w_{11} & w_{21} & \cdots & w_{m1} \\
+    w_{12} & w_{22} & \cdots & w_{m2} \\
+    \vdots & \vdots & \ddots & \vdots \\
+    w_{1n} & w_{2n} & \cdots & w_{mn}
+\end{bmatrix}
+\quad
+w^\top =
+\begin{bmatrix}
+    w_{11} & w_{12} & \cdots & w_{1n} \\
+    w_{21} & w_{22} & \cdots & w_{2n} \\
+    \vdots & \vdots & \ddots & \vdots \\
+    w_{m1} & w_{m2} & \cdots & w_{mn}
+\end{bmatrix} 
+$$
+
+### Propagación
+
+$$
+z = w^\top x + b
+$$
+
+$$
+\begin{bmatrix}
+    v_1 \\
+    v_2 \\
+    \vdots \\
+    v_m
+\end{bmatrix} =
+\begin{bmatrix}
+    w_{11} & w_{12} & \cdots & w_{1n} \\
+    w_{21} & w_{22} & \cdots & w_{2n} \\
+    \vdots & \vdots & \ddots & \vdots \\
+    w_{m1} & w_{m2} & \cdots & w_{mn} \\
+\end{bmatrix}
+\begin{bmatrix}
+    x_1 \\
+    x_2 \\
+    \vdots \\
+    x_n
+\end{bmatrix} +
+\begin{bmatrix}
+    b_1 \\
+    b_2 \\
+    \vdots \\
+    b_m
+\end{bmatrix}
+$$
+
+$$
+y = \varphi (v)
+$$
+
+$$
+\begin{bmatrix}
+    y_1 \\
+    y_2 \\
+    \vdots \\
+    y_m
+\end{bmatrix} = \varphi \left(
+\begin{bmatrix}
+    v_1 \\
+    v_2 \\
+    \vdots \\
+    v_m
+\end{bmatrix}
+\right)
+$$
+
+### Propagación de múltiples entradas
+
+Si se tiene un dataset
+
+$$
+\left\lbrace ( x^{(i)}, y^{(i)} ) \right\rbrace^p_{i=1} 
+$$
+
+Se tienen las siguientes matrices
+
+$$
+X =
+\begin{bmatrix}
+    x^{(1)}_1 & x^{(2)}_1 & \cdots & x^{(p)}_1 \\
+    x^{(1)}_2 & x^{(2)}_2 & \cdots & x^{(p)}_2 \\
+    \vdots & \vdots & \ddots & \vdots \\
+    x^{(1)}_n & x^{(2)}_n & \cdots & x^{(p)}_n \\
+\end{bmatrix} x^{(i)} \in \mathbb{R}^n
+$$
+
+$$
+D =
+\begin{bmatrix}
+    d^{(1)}_1 & d^{(2)}_1 & \cdots & d^{(p)}_1 \\
+    d^{(1)}_2 & d^{(2)}_2 & \cdots & d^{(p)}_2 \\
+    \vdots & \vdots & \ddots & \vdots \\
+    d^{(1)}_m & d^{(2)}_m & \cdots & d^{(p)}_m
+\end{bmatrix} d^{(i)} \in \mathbb{R}^m
+\quad
+\text{o}
+\quad
+d^{(i)} \in \{0, 1\}^m
+$$
+
+La salida obtenida será
+
+$$
+Y = \varphi
+\left(
+\begin{bmatrix}
+    w_{11} & w_{12} & \cdots & w_{1n} \\
+    w_{21} & w_{22} & \cdots & w_{2n} \\
+    \vdots & \vdots & \ddots & \vdots \\
+    w_{m1} & w_{m2} & \cdots & w_{mn}
+\end{bmatrix}
+\begin{bmatrix}
+    x^{(1)}_1 & x^{(2)}_1 & \cdots & x^{(p)}_1 \\
+    x^{(1)}_2 & x^{(2)}_2 & \cdots & x^{(p)}_2 \\
+    \vdots & \vdots & \ddots & \vdots \\
+    x^{(1)}_n & x^{(2)}_n & \cdots & x^{(p)}_n \\
+\end{bmatrix} +
+\begin{bmatrix}
+    b_1 \\
+    b_2 \\
+    \vdots \\
+    b_m
+\end{bmatrix}
+\right)
+$$
+
+$$
+Y =
+\begin{bmatrix}
+    y^{(1)}_1 & y^{(2)}_1 & \cdots & y^{(p)}_1 \\
+    y^{(1)}_2 & y^{(2)}_2 & \cdots & y^{(p)}_2 \\
+    \vdots & \vdots & \ddots & \vdots \\
+    y^{(1)}_m & y^{(2)}_m & \cdots & y^{(p)}_m \\
+\end{bmatrix}
+$$
+
+### Entrenamiento
+
+$$
+E = \dfrac{1}{2p} \sum^p_{i=1} ||d^{(i)} - y^{(i)} ||^2_2
+\quad
+Y = \varphi (w^\top X + b)
+$$
+
+$$
+\text{Norma euclidiana} = \sqrt{ (d_1 - y_1)^2 + (d_2 + y_2)^2 + (d_m - y_m)^2 }
+$$
+
+$$
+w \longleftarrow w + \dfrac{\eta}{p} \left[ (D - Y) \odot \dfrac{d}{dv} Y \right] X^\top
+$$
+
+$$
+b \longleftarrow b + \dfrac{\eta}{p} \text{sum} \left( (D - Y) \odot \dfrac{d}{dv} Y \right)
+$$
+
+### SoftMax
+
+![](.src/OLN/oln2.png)
+
+La diferencia entre la función ***SoftMax*** y las demás funciones de
+activación es que en esta función se necesitan todas las salidas de las
+neuronas y no de una sola, por lo que esta función solo se puede utilizar en
+una red neuronal y no para una sola neurona al usarla en una sola neurona se
+tiene el mismo resultado que al usar la función logística.
+
+La ecuación de la función ***SoftMax*** es la siguiente
+
+$$
+y_j = S(v_j) = \dfrac{e^{v_j}}{\sum_{i=1}^m e^{v_i}}
+$$
+
+La función ***SoftMax*** tiene un problema, y es que al usar exponenciales, los
+valores de la función se pueden desbordar muy fácilmente en cualquier lenguaje
+de programación, por lo que se hace lo siguiente
+
+$$
+S(v_j) = \dfrac{e^{v_j}}{\sum^m_{i=1} e^{v_i}}
+= \dfrac{C}{C} \dfrac{e^{v_j}}{\sum^m_{i=1} e^{v_i}}
+= \dfrac{C e^{v_j}}{\sum^m_{i=1} C e^{v_i}}
+= \dfrac{e^{\log(C)} e^{v_j}}{\sum^m_{i=1} e^{\log(C)} e^{v_i}}
+$$
+
+$$
+S(v_j) = \dfrac{e^{v_j + \log(C)}}{\sum^m_{i=1} e^{v_i + \log(C)}}
+= \dfrac{e^{v_j + D}}{\sum^m_{i=1} e^{v_i + D}}
+$$
+
+$$
+D = -\max\lbrace v_1, v_2, \cdots, v_m \rbrace
+$$
+
+Con esto se evita que los valores de la función sean muy grandes y así, evitar
+que los valores de desborden.
+
+#### Gradiente Descendente
+
+Usando el error de entropía cruzada categórica
+
+$$
+E = - \sum^m_{j=1} d_j \log (y_j)
+$$
+
+$$
+E = -\dfrac{1}{p} \sum^p_{i=1} \sum^m_{j=1} d^{(i)}_j \log\left( y^{(i)}_j \right)
+$$
+
+Se tiene el siguiente gradiente descendente cuando $i = j $
+
+$$
+\dfrac{\partial}{\partial v_i} y_j = \dfrac{\partial}{\partial v_i} S(v_j)
+= \dfrac{\partial}{\partial v_i} \dfrac{e^{v_j}}{\sum_{i=1}^m e^{v_i}}
+$$
+
+$$
+\dfrac{\partial}{\partial v_i} y_j = \dfrac{e^{v_j} \left( \sum_{i=1}^m e^{v_i}
+\right) - e^{v_j} e^{v_i}}{\left( \sum_{i=1}^m e^{v_i} \right)^2}
+$$
+
+$$
+\dfrac{\partial}{\partial v_i} y_j = \dfrac{e^{v_j}}{\sum_{i=1}^m e^{v_i}}
+\left( \dfrac{\sum_{i=1}^m e^{v_i} - e^{v_i}}{\sum_{i=1}^m e^{v_i}} \right)
+$$
+
+$$
+\dfrac{\partial}{\partial v_i} y_j = \dfrac{e^{v_j}}{\sum_{i=1}^m e^{v_i}}
+\left( \dfrac{\sum_{i=1}^m e^{v_i}}{\sum_{i=1}^m e^{v_i}} -
+\dfrac{e^{v_i}}{\sum_{i=1}^m e^{v_i}}\right)
+$$
+
+$$
+\dfrac{\partial}{\partial v_i} y_j = \dfrac{e^{v_j}}{\sum_{i=1}^m e^{v_i}}
+\left( 1 - \dfrac{e^{v_i}}{\sum_{i=1}^m e^{v_i}} \right)
+$$
+
+Ya que $i = j$ se tiene que
+
+$$
+\dfrac{\partial}{\partial v_i} y_j = y_j (1 - y_j) 
+$$
+
+Cuando $i \neq j$ se tiene el siguiente gradiente descendente
+
+$$
+\dfrac{\partial}{\partial v_i} y_j = \dfrac{0 \left( \sum_{i=1}^m e^{v_i}
+\right) - e^{v_j} e^{v_i}}{\left( \sum_{i=1}^m e^{v_i} \right)^2}
+= - \dfrac{e^{v_j}}{\sum_{i=1}^m e^{v_i}} \dfrac{e^{v_i}}{\sum_{i=1}^m e^{v_i}}
+$$
+
+Así, se tiene que el gradiente descendente es
+
+$$
+\dfrac{\partial}{\partial v_i} y_j = - y_j y_i
+$$
+
+Con estos dos resultados se puede representar el gradiente descendente de la
+función ***SoftMax*** de la siguiente manera
+
+$$
+\dfrac{\partial}{\partial v_i} y_j = y_j (1_{i=j} - y_i)
+\quad\quad
+1_{i=j} =
+\left\lbrace
+\begin{matrix}
+    1 & \text{si} & i = j \\
+    0 & \text{si} & i \neq j
+\end{matrix}
+\right.
+$$
+
+#### Función de costo
+
+Usando la entropía cruzada categórica se tiene
+
+$$
+E = - \sum_{j=1}^m d_j \log (y_j)
+$$
+
+$$
+d =
+\begin{bmatrix}
+    0 \\
+    1 \\
+    0 \\
+    \vdots \\
+    0
+\end{bmatrix}
+$$
+
+En este caso se toma $t$ como un indice, por ejemplo, en el vector anterior, si
+$t = 2$ se toma el valor $d_2 = 1$, con $t = 1$ se tiene $d_1 = 0 $
+
+$$
+\dfrac{\partial}{\partial w_{ij}} E = \dfrac{\partial}{\partial w_i} \left(
+-\sum_{j=1}^m d_j \log(y_j) \right)
+$$
+
+$$
+\dfrac{\partial}{\partial w_{ij}} E = \dfrac{\partial}{\partial w_i} \left( -\log(y_t) \right)
+$$
+
+$$
+\dfrac{\partial}{\partial w_{ij}} E = -\dfrac{1}{y_t} y_t (1_{i=t} - y_i) x_j
+$$
+
+Así, la función de costo es
+
+$$
+\dfrac{\partial}{\partial w_{ij}} E = - (d_i - y_i) x_j
+$$
+
+El ajuste de pesos y bias queda de la siguiente manera
+
+$$
+E = - \dfrac{1}{p} \sum_{i=1}^p \sum_{j=1}^m d_j^{(i)} \log \left( y_j^{(i)}
+\right)
+$$
+
+$$
+w \longleftarrow w + \dfrac{\eta}{p} \left( D - Y \right) X^\top
+$$
+
+$$
+b \longleftarrow b + \dfrac{\eta}{p} \text{sum} (D -Y)
+$$
+
+**Nota:** Usar la función ***SoftMax*** con el error de entropía cruzada
+categórica, nos lleva a reglas de adaptación semejantes a las de el error
+cuadrático medio con función de activación lineal.
+
 ## Anexo
 
 ### Perceptrón
@@ -1037,3 +1445,223 @@ $$
 b \longleftarrow b + \dfrac{\eta}{p} \sum_{i=1}^p \left( d^{(i)} - y^{(i)} \right)
 $$
 
+### Red Neuronal Unicapa (OLN)
+
+***Notación*** usada en una red neuronal unicapa
+
+$$
+x =
+\begin{bmatrix}
+    x_1 \\
+    x_2 \\
+    \vdots \\
+    x_n
+\end{bmatrix} \in \mathbb{R}^n
+\quad\quad
+y =
+\begin{bmatrix}
+    y_1 \\
+    y_2 \\
+    \vdots \\
+    y_m
+\end{bmatrix} \in \mathbb{R}^m
+\quad\quad
+b =
+\begin{bmatrix}
+    b_1 \\
+    b_2 \\
+    \vdots \\
+    b_m
+\end{bmatrix} \in \mathbb{R}^m
+$$
+
+$$
+w =
+\begin{bmatrix}
+    w_{11} & w_{21} & \cdots & w_{m1} \\
+    w_{12} & w_{22} & \cdots & w_{m2} \\
+    \vdots & \vdots & \ddots & \vdots \\
+    w_{1n} & w_{2n} & \cdots & w_{mn}
+\end{bmatrix}
+\quad
+w^\top =
+\begin{bmatrix}
+    w_{11} & w_{12} & \cdots & w_{1n} \\
+    w_{21} & w_{22} & \cdots & w_{2n} \\
+    \vdots & \vdots & \ddots & \vdots \\
+    w_{m1} & w_{m2} & \cdots & w_{mn}
+\end{bmatrix} 
+$$
+
+***Propagación*** de una red neuronal unicapa
+
+$$
+z = w^\top x + b
+$$
+
+$$
+\begin{bmatrix}
+    v_1 \\
+    v_2 \\
+    \vdots \\
+    v_m
+\end{bmatrix} =
+\begin{bmatrix}
+    w_{11} & w_{12} & \cdots & w_{1n} \\
+    w_{21} & w_{22} & \cdots & w_{2n} \\
+    \vdots & \vdots & \ddots & \vdots \\
+    w_{m1} & w_{m2} & \cdots & w_{mn} \\
+\end{bmatrix}
+\begin{bmatrix}
+    x_1 \\
+    x_2 \\
+    \vdots \\
+    x_n
+\end{bmatrix} +
+\begin{bmatrix}
+    b_1 \\
+    b_2 \\
+    \vdots \\
+    b_m
+\end{bmatrix}
+$$
+
+$$
+y = \varphi (v)
+$$
+
+$$
+\begin{bmatrix}
+    y_1 \\
+    y_2 \\
+    \vdots \\
+    y_m
+\end{bmatrix} = \varphi \left(
+\begin{bmatrix}
+    v_1 \\
+    v_2 \\
+    \vdots \\
+    v_m
+\end{bmatrix}
+\right)
+$$
+
+La ***propagación de multiples entradas*** en una red neuronal unicapa
+
+$$
+X =
+\begin{bmatrix}
+    x^{(1)}_1 & x^{(2)}_1 & \cdots & x^{(p)}_1 \\
+    x^{(1)}_2 & x^{(2)}_2 & \cdots & x^{(p)}_2 \\
+    \vdots & \vdots & \ddots & \vdots \\
+    x^{(1)}_n & x^{(2)}_n & \cdots & x^{(p)}_n \\
+\end{bmatrix} x^{(i)} \in \mathbb{R}^n
+$$
+
+$$
+D =
+\begin{bmatrix}
+    d^{(1)}_1 & d^{(2)}_1 & \cdots & d^{(p)}_1 \\
+    d^{(1)}_2 & d^{(2)}_2 & \cdots & d^{(p)}_2 \\
+    \vdots & \vdots & \ddots & \vdots \\
+    d^{(1)}_m & d^{(2)}_m & \cdots & d^{(p)}_m
+\end{bmatrix} d^{(i)} \in \mathbb{R}^m
+\quad
+\text{o}
+\quad
+d^{(i)} \in \{0, 1\}^m
+$$
+
+$$
+Y = \varphi
+\left(
+\begin{bmatrix}
+    w_{11} & w_{12} & \cdots & w_{1n} \\
+    w_{21} & w_{22} & \cdots & w_{2n} \\
+    \vdots & \vdots & \ddots & \vdots \\
+    w_{m1} & w_{m2} & \cdots & w_{mn}
+\end{bmatrix}
+\begin{bmatrix}
+    x^{(1)}_1 & x^{(2)}_1 & \cdots & x^{(p)}_1 \\
+    x^{(1)}_2 & x^{(2)}_2 & \cdots & x^{(p)}_2 \\
+    \vdots & \vdots & \ddots & \vdots \\
+    x^{(1)}_n & x^{(2)}_n & \cdots & x^{(p)}_n \\
+\end{bmatrix} +
+\begin{bmatrix}
+    b_1 \\
+    b_2 \\
+    \vdots \\
+    b_m
+\end{bmatrix}
+\right)
+$$
+
+$$
+Y =
+\begin{bmatrix}
+    y^{(1)}_1 & y^{(2)}_1 & \cdots & y^{(p)}_1 \\
+    y^{(1)}_2 & y^{(2)}_2 & \cdots & y^{(p)}_2 \\
+    \vdots & \vdots & \ddots & \vdots \\
+    y^{(1)}_m & y^{(2)}_m & \cdots & y^{(p)}_m \\
+\end{bmatrix}
+$$
+
+***Entrenamiento*** de la red
+
+$$
+w \longleftarrow w + \dfrac{\eta}{p} \left[ (D - Y) \odot \dfrac{d}{dv} Y \right] X^\top
+$$
+
+$$
+b \longleftarrow b + \dfrac{\eta}{p} \text{sum} \left( (D - Y) \odot \dfrac{d}{dv} Y \right)
+$$
+
+Función ***SoftMax***
+
+$$
+S(v_j) = \dfrac{e^{v_j + D}}{\sum^m_{i=1} e^{v_i + D}}
+\quad\text{con}\quad
+D = -\max\{v_1, v_2, \cdots, v_m\}
+$$
+
+***Gradiente descendente*** cuando $i = j $
+
+$$
+\dfrac{\partial}{\partial v_i} y_j = y_j (1 - y_j) 
+$$
+
+***Gradiente descendente*** cuando $i \neq j$
+
+$$
+\dfrac{\partial}{\partial v_i} y_j = - y_j y_i
+$$
+
+***Gradiente descendente*** mezclando ambos resultados
+
+$$
+\dfrac{\partial}{\partial v_i} y_j = y_j (1_{i=j} - y_i)
+\quad\quad
+1_{i=j} =
+\left\lbrace
+\begin{matrix}
+    1 & \text{si} & i = j \\
+    0 & \text{si} & i \neq j
+\end{matrix}
+\right.
+$$
+
+***Función de costo*** usando la entropía cruzada categórica
+
+$$
+\dfrac{\partial}{\partial w_{ij}} E = - (d_i - y_i) x_j
+$$
+
+***Ajuste de pesos y bias*** de la red neuronal
+
+$$
+w \longleftarrow w + \dfrac{\eta}{p} \left( D - Y \right) X^\top
+$$
+
+$$
+b \longleftarrow b + \dfrac{\eta}{p} \text{sum} (D -Y)
+$$

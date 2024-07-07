@@ -1,0 +1,30 @@
+digraph oln {
+    graph [
+        layout = dot
+        rankdir = "LR"
+    ];
+
+    subgraph cluster_0 {
+        label="Neurona - Nodo"
+        color=blue
+        v -> y
+    }
+
+    x1[label=<x<sub>1</sub>>, shape="plaintext"]
+    x2[label=<x<sub>2</sub>>, shape="plaintext"]
+    xn1[label=<x<sub>n-1</sub>>, shape="plaintext"]
+    xn[label=<x<sub>n</sub>>, shape="plaintext"]
+    bias[label="+1", shape="none"]
+
+    v[label=<&Sigma;>, shape="circle", fontsize=40]
+    y[label=<&phi;>, shape="circle", fontsize=24]
+    end[label="y", shape="none", fontsize=24]
+
+    x1 -> v[label=<w<sub>1</sub>>]
+    x2 -> v[label=<w<sub>2</sub>>]
+    xn1 -> v[label=<w<sub>n-1</sub>>]
+    xn -> v[label=<w<sub>n</sub>>]
+    bias -> v[label=<<i>b</i>>, shape="none", fontsize=12]
+    y -> end
+}
+
