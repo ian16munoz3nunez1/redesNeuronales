@@ -1349,6 +1349,224 @@ $$
 categórica, nos lleva a reglas de adaptación semejantes a las de el error
 cuadrático medio con función de activación lineal.
 
+### [OLN con funcion logistica](https://github.com/ian16munoz3nunez1/redesNeuronales/tree/5bf17fef2afa673f5491babeca2c57f43b394c4e)
+
+![](.src/OLN/oln0x.png)
+
+### [OLN con funcion Softmax](https://github.com/ian16munoz3nunez1/redesNeuronales/tree/14198076709ed16d2941cd632ce09bd86f2dd898)
+
+![](.src/OLN/oln1x.png)
+
+## Red Neuronal Multicapa
+
+- MLP (Multi-Layer Perceptron)
+- FCN (Fully Connected Network)
+- Dense Network
+
+### Notación
+
+![](.src/MLP/mlp0.png)
+
+![](.src/MLP/mlp.png)
+
+$L$: Última capa
+
+$n_l$: Número de neuronas o entradas en la capa número $l$
+
+En este caso, los valores de esta red neuronal son
+
+$L = 3 \quad n_0 = 2 \quad n_1 = 2 \quad n_2 = 3 \quad n_3 = n_L = 2 $
+
+$w_{i,j}^l$: peso sináptico en la capa $l$ de la neurona $i$ con la entrada
+$j$.
+
+$b_i^l$: sesgo de la neurona $i$ en la capa $l$.
+
+$$
+w^l =
+\begin{bmatrix}
+    w_{11}^l & w_{21}^l & \cdots & w_{n_l1}^l \\
+    w_{12}^l & w_{22}^l & \cdots & w_{n_l2}^l \\
+    \vdots & \vdots & \ddots & \vdots \\
+    w_{1n_{l-1}}^l & w_{2n_{l-1}}^l & \cdots & w_{n_ln_{l-1}}^l
+\end{bmatrix} \in \mathbb{R}^{n_{l-1} \times n_l}
+$$
+
+$$
+b^l =
+\begin{bmatrix}
+    b_1^l \\
+    b_2^l \\
+    \vdots \\
+    b_{n_l}^l
+\end{bmatrix} \in \mathbb{R}^{n_{l-1}}
+$$
+
+$a_i^l$: Salida de la capa $l$ de la neurona $i$.
+
+$$
+a_i^0 = x_i \quad a_i^L = \hat{y}_i
+$$
+
+$$
+a^{l} =
+\begin{bmatrix}
+    a_1^l \\
+    a_2^l \\
+    \vdots \\
+    a_{n_l}^l
+\end{bmatrix} \in \mathbb{R}^{n_l}
+$$
+
+$\varphi_i^l(v)$: función de activación de la neurona $i$ en la capa $l$.
+
+### Propagación
+
+$a^0 = x$
+
+$v^1 = w^{1^\top} a^0 + b^1$
+
+$a^1 = \varphi^1(v^1)$
+
+$v^2 = w^{2^\top} a^1 + b^2$
+
+$a^2 = \varphi^2(v^2)$
+
+$v^3 = w^{3^\top} a^2 + b^3$
+
+$a^3 = \varphi^3(v^3)$
+
+$\hat{y} = a^3$
+
+### Backpropagation
+
+$$
+d a_i^L = \dfrac{d \varphi_i^L}{d v}
+$$
+
+$$
+\delta_i^L = (\hat{y}_i - a_i^L) d a_i^L
+$$
+
+$\delta_i^l$: El gradiente local de la neurona $i$ en la capa $l$.
+
+Para obtener el gradiente local (Caso específico)
+
+$$
+\delta_1^2 = \left[ w_{11}^3\delta_1^3 + w_{21}^3\delta_2^3 \right] da_1^2
+$$
+
+$$
+\delta_2^1 = \left[ w_{12}^2\delta_1^2 + w_{22}^2\delta_2^2 + w_{32}^2\delta_3^2 \right] da_2^1
+$$
+
+Para obtener el gradiente local (Caso general)
+
+$$
+\delta_i^l =
+\left\lbrace
+\begin{matrix}
+    \left(\hat{y}_i - a_i^l\right)da_i^l & l = L \\
+    \\
+    \displaystyle \left[ \sum _{j=1}^{n _{l+1}} w _{ji}^{l+1} \delta _j^{l+1} \right] da _i^l & 0 < l < L
+\end{matrix}
+\right.
+$$
+
+$$
+w^l \longleftarrow w^l + \eta a^{(l-1)} \left[ (\hat{y} - a^l) \odot da^l \right]^\top
+$$
+
+$$
+b^l \longleftarrow b^l + \eta \left[ (\hat{y} - a^l) \odot da^l \right]
+$$
+
+### Resumen
+
+$$
+\delta_i^l =
+\left\lbrace
+\begin{matrix}
+    \left(\hat{y}_i - a_i^l\right) da_i^l & \text{si} & l = L \\
+    \\
+    \displaystyle \left[ \sum _{j=1}^{n _{l+1}} w _{ji}^{l+1} \delta _j^{l+1} \right] da _i^l & \text{si} & 0 < l < L
+\end{matrix}
+\right.
+$$
+
+$$
+w_{ij}^l \longleftarrow w_{ij}^l + \eta a_j^{l-1}  \delta_i^{l^\top}
+$$
+
+$$
+b_i^l \longleftarrow b_i^l + \eta \delta_i^l
+$$
+
+### Vectorizando
+
+$$
+\delta^l =
+\begin{bmatrix}
+    \delta_1^l \\
+    \delta_2^l \\
+    \vdots \\
+    \delta_{n_l}^l
+\end{bmatrix} \in \mathbb{R}^{n_l}
+$$
+
+$$
+\delta^l =
+\left\lbrace
+\begin{matrix}
+    (\hat{y} - a^l) \odot da^l & \text{si} & l = L \\
+    \\
+    \left[ w^{(l+1)} \delta^{(l+1)} \right] \odot da^l & \text{si} & 0 < l < L
+\end{matrix}
+\right.
+$$
+
+$$
+w^l \longleftarrow w^l + \eta a^{(l-1)} \delta^{l^\top}
+$$
+
+$$
+b^l \longleftarrow b^l + \eta \delta^l
+$$
+
+### [MLP como clasificador](https://github.com/ian16munoz3nunez1/redesNeuronales/tree/313605f702dd8b3820f496596c941215787c14d0)
+
+![](.src/MLP/mlp0x.png)
+
+### [MLP como aproximador no lineal en 2D](https://github.com/ian16munoz3nunez1/redesNeuronales/tree/307aa11da8f866e3bd926d44fbcdceea83881288)
+
+![](.src/MLP/mlp1.png)
+
+### [MLP como aproximador no lineal en 3D](https://github.com/ian16munoz3nunez1/redesNeuronales/tree/38f8cf979e7ea72a07ce6ca4cffa2931abaa0e65)
+
+![](.src/MLP/mlp2_1.png)
+
+![](.src/MLP/mlp2_2.png)
+
+### [MLP como clasificador con Softmax](https://github.com/ian16munoz3nunez1/redesNeuronales/tree/b3a5558833dafd91fb457ebcac51185005622f7f)
+
+![](.src/MLP/mlp3.png)
+
+### [Metricas de regresion del MLP](https://github.com/ian16munoz3nunez1/redesNeuronales/tree/7524e73cfe4bcb138b35d0f038e9e5baf0a09002)
+
+![](.src/MLP/mlp4.png)
+
+### [Train Test Split del MLP](https://github.com/ian16munoz3nunez1/redesNeuronales/tree/32a40e62640fe8e45f97fda909ed46855c619f46)
+
+![](.src/MLP/mlp5_1.png)
+
+![](.src/MLP/mlp5_2.png)
+
+### [Scaler con el MLP](https://github.com/ian16munoz3nunez1/redesNeuronales/tree/ec573f9af5910c0738d6063f281a32daca407224)
+
+![](.src/MLP/mlp6_1.png)
+
+![](.src/MLP/mlp6_2.png)
+
 ## Anexo
 
 ### Perceptrón
@@ -1665,3 +1883,150 @@ $$
 $$
 b \longleftarrow b + \dfrac{\eta}{p} \text{sum} (D -Y)
 $$
+
+### Red Neuronal Multicapa (MLP)
+
+#### Notación
+
+$L$: Última capa
+
+$n_l$: Número de neuronas o entradas en la capa número $l$
+
+$w_{i,j}^l$: peso sináptico en la capa $l$ de la neurona $i$ con la entrada
+$j$.
+
+$$
+w^l =
+\begin{bmatrix}
+    w_{11}^l & w_{21}^l & \cdots & w_{n_l1}^l \\
+    w_{12}^l & w_{22}^l & \cdots & w_{n_l2}^l \\
+    \vdots & \vdots & \ddots & \vdots \\
+    w_{1n_{l-1}}^l & w_{2n_{l-1}}^l & \cdots & w_{n_ln_{l-1}}^l
+\end{bmatrix} \in \mathbb{R}^{n_{l-1} \times n_l}
+$$
+
+$b_i^l$: sesgo de la neurona $i$ en la capa $l$.
+
+$$
+b^l =
+\begin{bmatrix}
+    b_1^l \\
+    b_2^l \\
+    \vdots \\
+    b_{n_l}^l
+\end{bmatrix} \in \mathbb{R}^{n_{l-1}}
+$$
+
+$a_i^l$: Salida de la capa $l$ de la neurona $i$.
+
+$$
+a_i^0 = x_i \quad a_i^L = \hat{y}_i
+$$
+
+$$
+a^{l} =
+\begin{bmatrix}
+    a_1^l \\
+    a_2^l \\
+    \vdots \\
+    a_{n_l}^l
+\end{bmatrix} \in \mathbb{R}^{n_l}
+$$
+
+$\varphi_i^l(v)$: función de activación de la neurona $i$ en la capa $l$.
+
+#### Propagación
+
+$a^0 = x$
+
+$v^1 = w^{1^\top} a^0 + b^1$
+
+$a^1 = \varphi^1(v^1)$
+
+$v^2 = w^{2^\top} a^1 + b^2$
+
+$a^2 = \varphi^2(v^2)$
+
+$v^3 = w^{3^\top} a^2 + b^3$
+
+$a^3 = \varphi^3(v^3)$
+
+$\hat{y} = a^3$
+
+#### Backpropagation
+
+$\delta_i^l$: El gradiente local de la neurona $i$ en la capa $l$.
+
+$$
+\delta^l =
+\begin{bmatrix}
+    \delta_1^l \\
+    \delta_2^l \\
+    \vdots \\
+    \delta_{n_l}^l
+\end{bmatrix} \in \mathbb{R}^{n_l}
+$$
+
+Para obtener el gradiente local (Caso general)
+
+$$
+\delta_i^l =
+\left\lbrace
+\begin{matrix}
+    \left(\hat{y}_i - a_i^l\right)da_i^l & l = L \\
+    \\
+    \displaystyle \left[ \sum _{j=1}^{n _{l+1}} w _{ji}^{l+1} \delta _j^{l+1} \right] da _i^l & 0 < l < L
+\end{matrix}
+\right.
+$$
+
+$$
+w^l \longleftarrow w^l + \eta a^{(l-1)} \left[ (\hat{y} - a^l) \odot da^l \right]^\top
+$$
+
+$$
+b^l \longleftarrow b^l + \eta \left[ (\hat{y} - a^l) \odot da^l \right]
+$$
+
+#### Ajuste de pesos y bias
+
+$$
+\delta_i^l =
+\left\lbrace
+\begin{matrix}
+    \left(\hat{y}_i - a_i^l\right) da_i^l & \text{si} & l = L \\
+    \\
+    \displaystyle \left[ \sum _{j=1}^{n _{l+1}} w _{ji}^{l+1} \delta _j^{l+1} \right] da _i^l & \text{si} & 0 < l < L
+\end{matrix}
+\right.
+$$
+
+$$
+w_{ij}^l \longleftarrow w_{ij}^l + \eta a_j^{l-1}  \delta_i^{l^\top}
+$$
+
+$$
+b_i^l \longleftarrow b_i^l + \eta \delta_i^l
+$$
+
+#### Vectorizando
+
+$$
+\delta^l =
+\left\lbrace
+\begin{matrix}
+    (\hat{y} - a^l) \odot da^l & \text{si} & l = L \\
+    \\
+    \left[ w^{(l+1)} \delta^{(l+1)} \right] \odot da^l & \text{si} & 0 < l < L
+\end{matrix}
+\right.
+$$
+
+$$
+w^l \longleftarrow w^l + \eta a^{(l-1)} \delta^{l^\top}
+$$
+
+$$
+b^l \longleftarrow b^l + \eta \delta^l
+$$
+
