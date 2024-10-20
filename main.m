@@ -8,17 +8,17 @@ pkg load statistics
 
 xl = -5; % Limite inferior de la funcion
 xu = 5; % Limite superior de la funcion
-n = 10; % Numero de elementos de entrada
+n = 50; % Numero de elementos de entrada
 
 x = linspace(xl, xu, n)'; % Datos de entrada
-y = sin(x); % Salida deseada
+y = 2 * cos(x) + sin(3*x) + 5; % Salida deseada
 
 figure(1)
 hold on
 grid on
 plot(x, y, 'r*', 'LineWidth', 2, 'MarkerSize', 8)
 
-k = 8; % Numero de nucleos
+k = 16; % Numero de nucleos
 [~, mu] = kmeans(x,k); % Distribucion de los nucleos
 
 sigma = (max(mu)-min(mu))/sqrt(2*k); % Desviacion estandar
@@ -52,7 +52,7 @@ grid on
 
 plot(x, yp, 'b-', 'LineWidth', 2)
 
-title("Funcion seno", 'FontSize', 20)
+title("Funcion 2D", 'FontSize', 20)
 xlabel('x', 'FontSize', 15)
 ylabel('y', 'FontSize', 15)
 
