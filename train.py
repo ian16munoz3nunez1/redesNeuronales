@@ -11,11 +11,11 @@ xu = 5 # Limite superior
 n = 20 # Numero de elementos
 
 x = np.linspace(xl, xu, n).reshape(1,-1) # Patron de entrada
-y = np.sin(x) # Salida deseada
+y = 2*np.cos(x) + np.sin(3*x) + 5 # Salida deseada
 
 plt.plot(x, y, 'ro')
 
-k = 8 # Numero de nucleos
+k = 16 # Numero de nucleos
 nn = RBF(k) # Modelo de la red neuronal
 nn.fit(x, y, n) # Entrenamiento de la red
 

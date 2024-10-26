@@ -11,14 +11,14 @@ xu = 5; % Limite superior de la funcion
 n = 20; % Numero de elementos
 
 x = linspace(xl, xu, n); % Patron de entrada
-y = sin(x); % Salida deseada
+y = 2*cos(x) + sin(3*x) + 5; % Salida deseada
 
 figure(1)
 hold on
 grid on
 plot(x, y, 'r*', 'LineWidth', 6, 'MarkerSize', 4)
 
-k = 8; % Numero de nucleos
+k = 16; % Numero de nucleos
 
 [~, mu] = kmeans(x', k); % Distribucion de los nucleos
 mu = mu';
