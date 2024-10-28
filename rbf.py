@@ -25,7 +25,7 @@ class RBF:
         for i in range(k):
             for j in range(n):
                 dist = np.linalg.norm(x[:,j]-mu[:,i],2) # Distancia Euclidiana
-                G[j,i] = np.exp(-(dist**2)/(sigma**2)) # Funcion de Base Radial
+                G[j,i] = np.exp(-(dist**2)/(2*(sigma**2))) # Funcion de Base Radial
 
         self.__W = np.dot(np.linalg.pinv(G), y.T) # Pesos de la red
 
@@ -40,7 +40,7 @@ class RBF:
         for i in range(k):
             for j in range(n):
                 dist = np.linalg.norm(x[:,j]-mu[:,i],2) # Distancia Euclidiana
-                G[j,i] = np.exp(-(dist**2)/(sigma**2)) # Funcion de Base Radial
+                G[j,i] = np.exp(-(dist**2)/(2*(sigma**2))) # Funcion de Base Radial
 
         y = np.dot(G, W) # Prediccion de la red
 
