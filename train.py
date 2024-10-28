@@ -4,35 +4,47 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib import colormaps
 from rbf import RBF
 
+# print(list(colormaps)) # Muestra los espacios de color para la malla de matplotlib
+
 pi = np.pi
-xl = 0 # Limite inferior de la funcion
-xu = 1 # Limite superior de la funcion
-n = 500 # Numero de elementos en el patron de entrada
+xl = 0 # Limite inferior
+xu = 2*pi # Limite superior
+n = 20 # Numero de elementos
 
-x1 = xl + (xu-xl) * np.random.rand(1,n)
-x2 = xl + (xu-xl) * np.random.rand(1,n)
-x = np.vstack((x1, x2)) # Patron de entrada
-y = (1.3356 * (1.5 * (1 - x1)) + (np.exp(2 * x1 - 1) * np.sin(3 * pi * (x1 - 0.6)**2)) + (np.exp(3 * (x2 - 0.5)) * np.sin(4 * pi * (x2 - 0.9)**2))) # Salida deseada
+# Patron de entrada
+x = np.linspace(xl, xu, n).reshape(1,-1)
+y = np.linspace(xl, xu, n).reshape(1,-1)
+xy = np.vstack((x,y))
+X, Y = np.meshgrid(x, y)
 
-k = 16 # Numero de nucleos
+# Salida deseada
+Z = np.cos(X) - 3*np.sin(Y)
+
+fig = plt.figure(1)
+ax0 = fig.add_subplot(121, projection='3d')
+ax0.plot_surface(X, Y, Z, cmap='viridis')
+ax0.set_title("Funcion", fontsize=20)
+ax0.set_xlabel('x', fontsize=15)
+ax0.set_ylabel('y', fontsize=15)
+ax0.set_zlabel('z', fontsize=15)
+ax0.view_init(elev=20, azim=-135)
+
+k = 12 # Numero de nucleos
 nn = RBF(k) # Modelo de la red neuronal
+nn.fit(xy, Z, n) # Entrenamiento de la red
 
-nn.fit(x,y,n) # Ajuste de los valores de la red
+zp = nn.predict(xy) # Prediccion de la red
 
-yp = nn.predict(x) # Prediccion de la red
-
-plt.figure(1)
-plt.grid()
-
-plt.plot(y[0], 'b-', linewidth=2)
-plt.plot(yp.T[0], 'r-', linewidth=2)
-
-plt.title("Random function", fontsize=20)
-plt.xlabel('x', fontsize=15)
-plt.ylabel('y', fontsize=15)
-plt.legend(["function", "prediction"])
+ax1 = fig.add_subplot(122, projection='3d')
+ax1.plot_surface(X, Y, zp.T, cmap='viridis')
+ax1.set_title("Prediccion", fontsize=20)
+ax1.set_xlabel('x', fontsize=15)
+ax1.set_ylabel('y', fontsize=15)
+ax1.set_zlabel('z', fontsize=15)
+ax1.view_init(elev=20, azim=-135)
 
 plt.show()
 
