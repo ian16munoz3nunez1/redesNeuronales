@@ -1567,6 +1567,126 @@ $$
 
 ![](.src/MLP/mlp6_2.png)
 
+## Redes Neuronales de Base Radial
+
+$$
+\Huge
+r = \parallel x - \mu \parallel
+$$
+
+### Funciones de base radial
+
+Función Gaussiana:
+
+$$
+\Huge
+\phi(r) = e^{-\frac{r^2}{\sigma^2}}
+$$
+
+Función multicuadrática:
+
+$$
+\Huge
+\phi(r) = \sqrt{1 + (\epsilon r)^2}
+$$
+
+Función cuadrática inversa:
+
+$$
+\Huge
+\phi(r) = \dfrac{1}{\sqrt{1 + (\epsilon r)^2}}
+$$
+
+Función Spline poliarmónico:
+
+$$
+\Huge
+\phi(r) = r^k, \quad k = 1, 3, 5, \cdots
+$$
+
+$$
+\Huge
+\phi(r) = r^k \ln(r), k = 2, 4, 6, \cdots
+$$
+
+### Aproximación de funciones
+
+Se pueden aproximar funciones usando una combinación lineal de ***{RBFs}*** usando
+
+$$
+\Huge
+f(x) = \sum_{k=1}^N \mu_k \Phi \left( \parallel x - \mu_k \parallel \right)
+$$
+
+La ecuación puede interpretarse con la siguiente red neuronal
+
+![](.src/rbf/rbf0.png)
+
+### Neurona radial
+
+$$
+\Huge
+\phi(r) = \phi(\parallel x - \mu \parallel) = e^{\frac{-\parallel x - \mu \parallel_2^2}{\sigma^2}}
+$$
+
+### Propagación
+
+![](.src/rbf/rbf1.png)
+
+### Entrenamiento semi-supervisado
+
+- Paso no supervisado
+    - Usar un algoritmo de agrupamiento para entrenar los valores
+        $\lbrace \mu_1, \mu_2, \cdots, \mu_k \rbrace$
+
+- Paso supervisado
+    - Entrenar la matriz $W$ de la capa de salida usando el método de la
+    pseudoinversa.
+
+### Parte supervisada
+
+$$
+\Huge
+\sigma = \dfrac{\max(\lbrace \mu_1, \mu_2, \cdots, \mu_k \rbrace) - \min(\lbrace \mu_1, \mu_2, \cdots, \mu_k \rbrace)}{\sqrt{2k}}
+$$
+
+$$
+\Huge
+\phi_{ij} = e^{\frac{- \parallel x_i - \mu_j \parallel _2^2}{\sigma^2}}
+$$
+
+$$
+\Huge
+\begin{bmatrix}
+    \phi_{11} & \phi_{12} & \cdots & \phi_{1k} \\
+    \phi_{21} & \phi_{22} & \cdots & \phi_{2k} \\
+    \vdots & \vdots & \ddots & \vdots \\
+    \phi_{n1} & \phi_{n2} & \cdots & \phi_{nk}
+\end{bmatrix}
+\begin{bmatrix}
+    w_{11} & w_{12} & \cdots & w_{1m} \\
+    w_{21} & w_{22} & \cdots & w_{2m} \\
+    \vdots & \vdots & \ddots & \vdots \\
+    w_{k1} & w_{k2} & \cdots & w_{km}
+\end{bmatrix} =
+\begin{bmatrix}
+    y_{11} & y_{12} & \cdots & y_{1m} \\
+    y_{21} & y_{22} & \cdots & y_{2m} \\
+    \vdots & \vdots & \ddots & \vdots \\
+    y_{n1} & y_{n2} & \cdots & y_{nm}
+\end{bmatrix}
+$$
+
+$$
+\Huge
+G W = Y
+$$
+
+$$
+\Huge
+W = G^+ Y
+$$
+
 ## Anexo
 
 ### Perceptrón
